@@ -1,9 +1,12 @@
 package com.nexpay.connection.service;
 
+import com.nexpay.common.service.PaginationService;
 import com.nexpay.connection.dto.ConnectionRequest;
 import com.nexpay.connection.dto.ConnectionResponse;
 import com.nexpay.connection.entity.Connection;
 import com.nexpay.connection.repository.ConnectionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +15,14 @@ import java.util.List;
 public class ConnectionService {
 
     private final ConnectionRepository connectionRepository;
+    private final PaginationService paginationService;
 
-    public ConnectionService(ConnectionRepository connectionRepository) {
+    public ConnectionService(
+            ConnectionRepository connectionRepository,
+            PaginationService paginationService) {
+
         this.connectionRepository = connectionRepository;
+        this.paginationService = paginationService;
     }
 
     public ConnectionResponse createConnection(ConnectionRequest request) {
@@ -33,8 +41,14 @@ public class ConnectionService {
         );
     }
 
-    public List<Connection> getConnectionsByUserId(Long userId) {
-        return connectionRepository.findByUserId(userId);
+    public Page<Connection> getConnectionsByUserId(
+            Long userId,
+            Pageable pageable) {
+
+        List<Connection> connections =
+                connectionRepository.findByUserId(userId);
+
+        return paginationService.paginate(connections, pageable);
     }
 
     public void deleteConnection(Long connectionId) {

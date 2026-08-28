@@ -57,6 +57,12 @@
             <artifactId>spring-security-crypto</artifactId>
         </dependency>
 
+<dependency>
+    <groupId>com.nexpay</groupId>
+    <artifactId>nexpay-common</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+
         <dependency>
     <groupId>org.springframework.security</groupId>
     <artifactId>spring-security-crypto</artifactId>
