@@ -5,6 +5,8 @@ import com.nexpay.transaction.dto.TransactionResponse;
 import com.nexpay.transaction.model.Transaction;
 import com.nexpay.transaction.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,13 +41,19 @@ public class TransactionService {
         );
     }
 
-    public List<Transaction> getTransactionsBySenderId(Long senderId) {
-        return transactionRepository.findBySenderId(senderId);
-    }
+    public Page<Transaction> getTransactionsBySenderId(
+        Long senderId,
+        Pageable pageable) {
 
-    public List<Transaction> getTransactionsByReceiverId(Long receiverId) {
-        return transactionRepository.findByReceiverId(receiverId);
-    }
+    return transactionRepository.findBySenderId(senderId, pageable);
+}
+
+public Page<Transaction> getTransactionsByReceiverId(
+        Long receiverId,
+        Pageable pageable) {
+
+    return transactionRepository.findByReceiverId(receiverId, pageable);
+}
 
     public void deleteTransaction(Long transactionId) {
         transactionRepository.deleteById(transactionId);

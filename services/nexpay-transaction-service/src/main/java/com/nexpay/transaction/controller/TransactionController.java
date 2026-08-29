@@ -6,8 +6,9 @@ import com.nexpay.transaction.model.Transaction;
 import com.nexpay.transaction.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
@@ -28,23 +29,31 @@ public class TransactionController {
         );
     }
 
-    @GetMapping("/sender/{senderId}")
-    public ResponseEntity<List<Transaction>> getTransactionsBySender(
-            @PathVariable Long senderId) {
+   @GetMapping("/sender/{senderId}")
+public ResponseEntity<Page<Transaction>> getTransactionsBySender(
+        @PathVariable Long senderId,
+        Pageable pageable) {
 
-        return ResponseEntity.ok(
-                transactionService.getTransactionsBySenderId(senderId)
-        );
-    }
+    return ResponseEntity.ok(
+            transactionService.getTransactionsBySenderId(
+                    senderId,
+                    pageable
+            )
+    );
+}
 
     @GetMapping("/receiver/{receiverId}")
-    public ResponseEntity<List<Transaction>> getTransactionsByReceiver(
-            @PathVariable Long receiverId) {
+public ResponseEntity<Page<Transaction>> getTransactionsByReceiver(
+        @PathVariable Long receiverId,
+        Pageable pageable) {
 
-        return ResponseEntity.ok(
-                transactionService.getTransactionsByReceiverId(receiverId)
-        );
-    }
+    return ResponseEntity.ok(
+            transactionService.getTransactionsByReceiverId(
+                    receiverId,
+                    pageable
+            )
+    );
+}
 
     @DeleteMapping("/{transactionId}")
     public ResponseEntity<Void> deleteTransaction(
