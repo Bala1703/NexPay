@@ -5,13 +5,14 @@ import com.nexpay.user.dto.UserResponse;
 import com.nexpay.user.entity.User;
 import com.nexpay.user.repository.UserRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -60,12 +61,16 @@ public class UserService {
         return toResponse(savedUser);
     }
 
-    public List<UserResponse> getUsers() {
+    /**
+     * Returns users using pagination.
+     *
+     * Example:
+     * GET /api/users?page=0&size=10
+     */
+    public Page<UserResponse> getUsers(Pageable pageable) {
 
-        return userRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+        return userRepository.findAll(pageable)
+                .map(this::toResponse);
     }
 
     public UserResponse getUserById(Integer id) {

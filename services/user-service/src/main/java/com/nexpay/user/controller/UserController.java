@@ -6,8 +6,8 @@ import com.nexpay.user.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/users")
@@ -27,10 +27,10 @@ public class UserController {
         return userService.createUser(request);
     }
 
-    @GetMapping
-    public List<UserResponse> getUsers() {
-        return userService.getUsers();
-    }
+   @GetMapping
+public Page<UserResponse> getUsers(Pageable pageable) {
+    return userService.getUsers(pageable);
+}
 
     @GetMapping("/{id}")
     public UserResponse getUserById(
