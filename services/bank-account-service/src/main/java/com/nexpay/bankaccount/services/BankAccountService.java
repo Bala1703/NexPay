@@ -3,8 +3,8 @@ package com.nexpay.bankaccount.services;
 import com.nexpay.bankaccount.DTO.BankAccountResponse;
 import com.nexpay.bankaccount.DTO.CreateBankAccountRequest;
 import com.nexpay.bankaccount.DTO.UpdateBankAccountRequest;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BankAccountService {
 
@@ -12,7 +12,13 @@ public interface BankAccountService {
 
     BankAccountResponse getAccountById(Long accountId);
 
-    List<BankAccountResponse> getAccountsByUserId(Long userId);
+    Page<BankAccountResponse> getAccountsByUserId(
+            Long userId,
+            Pageable pageable
+    );
 
-    BankAccountResponse updateAccount(Long accountId, UpdateBankAccountRequest request);
+    BankAccountResponse updateAccount(
+            Long accountId,
+            UpdateBankAccountRequest request
+    );
 }

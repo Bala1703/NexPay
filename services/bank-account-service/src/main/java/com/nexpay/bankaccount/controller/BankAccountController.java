@@ -9,8 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/bank-accounts")
@@ -40,14 +41,15 @@ public class BankAccountController {
         );
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<BankAccountResponse>> getAccountsByUserId(
-            @PathVariable Long userId) {
+   @GetMapping("/user/{userId}")
+public ResponseEntity<Page<BankAccountResponse>> getAccountsByUserId(
+        @PathVariable Long userId,
+        Pageable pageable) {
 
-        return ResponseEntity.ok(
-                bankAccountService.getAccountsByUserId(userId)
-        );
-    }
+    return ResponseEntity.ok(
+            bankAccountService.getAccountsByUserId(userId, pageable)
+    );
+}
 
     @PutMapping("/{accountId}")
     public ResponseEntity<BankAccountResponse> updateAccount(

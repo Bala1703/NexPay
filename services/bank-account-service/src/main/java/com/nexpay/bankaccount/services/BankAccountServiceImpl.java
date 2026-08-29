@@ -8,10 +8,10 @@ import com.nexpay.bankaccount.exceptions.BankAccountNotFoundException;
 import com.nexpay.bankaccount.exceptions.DuplicateIbanException;
 import com.nexpay.bankaccount.repository.BankAccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,12 +57,13 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BankAccountResponse> getAccountsByUserId(Long userId) {
+    public Page<BankAccountResponse> getAccountsByUserId(
+            Long userId,
+            Pageable pageable) {
 
-        return bankAccountRepository.findByUserId(userId)
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
+        return bankAccountRepository
+                .findByUserId(userId, pageable)
+                .map(this::mapToResponse);
     }
 
     @Override
@@ -102,3 +103,4 @@ public class BankAccountServiceImpl implements BankAccountService {
         return response;
     }
 }
+
