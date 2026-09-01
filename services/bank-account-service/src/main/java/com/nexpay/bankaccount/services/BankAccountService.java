@@ -6,6 +6,8 @@ import com.nexpay.bankaccount.DTO.UpdateBankAccountRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+
 public interface BankAccountService {
 
     BankAccountResponse createAccount(CreateBankAccountRequest request);
@@ -20,5 +22,15 @@ public interface BankAccountService {
     BankAccountResponse updateAccount(
             Long accountId,
             UpdateBankAccountRequest request
+    );
+
+    BankAccountResponse debit(
+            Long accountId,
+            BigDecimal amount
+    );
+
+    BankAccountResponse credit(
+            Long accountId,
+            BigDecimal amount
     );
 }

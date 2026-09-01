@@ -25,14 +25,18 @@ public class ConnectionService {
         this.paginationService = paginationService;
     }
 
-    public ConnectionResponse createConnection(ConnectionRequest request) {
+    public ConnectionResponse createConnection(
+            ConnectionRequest request) {
 
         Connection connection = new Connection();
 
         connection.setUserId(request.getUserId());
-        connection.setConnectedUserId(request.getConnectedUserId());
+        connection.setConnectedUserId(
+                request.getConnectedUserId()
+        );
 
-        Connection savedConnection = connectionRepository.save(connection);
+        Connection savedConnection =
+                connectionRepository.save(connection);
 
         return new ConnectionResponse(
                 savedConnection.getConnectionId(),
@@ -48,10 +52,25 @@ public class ConnectionService {
         List<Connection> connections =
                 connectionRepository.findByUserId(userId);
 
-        return paginationService.paginate(connections, pageable);
+        return paginationService.paginate(
+                connections,
+                pageable
+        );
+    }
+
+    public boolean isConnected(
+            Long userId,
+            Long connectedUserId) {
+
+        return connectionRepository
+                .existsByUserIdAndConnectedUserId(
+                        userId,
+                        connectedUserId
+                );
     }
 
     public void deleteConnection(Long connectionId) {
+
         connectionRepository.deleteById(connectionId);
     }
 }

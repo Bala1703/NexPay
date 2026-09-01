@@ -15,7 +15,9 @@ public class ConnectionController {
 
     private final ConnectionService connectionService;
 
-    public ConnectionController(ConnectionService connectionService) {
+    public ConnectionController(
+            ConnectionService connectionService) {
+
         this.connectionService = connectionService;
     }
 
@@ -34,7 +36,26 @@ public class ConnectionController {
             Pageable pageable) {
 
         return ResponseEntity.ok(
-                connectionService.getConnectionsByUserId(userId, pageable)
+                connectionService
+                        .getConnectionsByUserId(
+                                userId,
+                                pageable
+                        )
+        );
+    }
+
+    @GetMapping(
+            "/user/{userId}/connected/{connectedUserId}"
+    )
+    public ResponseEntity<Boolean> isConnected(
+            @PathVariable Long userId,
+            @PathVariable Long connectedUserId) {
+
+        return ResponseEntity.ok(
+                connectionService.isConnected(
+                        userId,
+                        connectedUserId
+                )
         );
     }
 
