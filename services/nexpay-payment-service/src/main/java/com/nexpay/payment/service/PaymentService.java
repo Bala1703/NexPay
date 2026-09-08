@@ -92,6 +92,7 @@ public class PaymentService {
             PaymentRequest request) {
 
         if (request == null) {
+
             throw new PaymentException(
                     "Payment request cannot be null"
             );
@@ -129,15 +130,16 @@ public class PaymentService {
 
         try {
 
-            Boolean connected = restClient.get()
-                    .uri(
-                            "http://localhost:8083/connections/user/"
-                                    + senderId
-                                    + "/connected/"
-                                    + receiverId
-                    )
-                    .retrieve()
-                    .body(Boolean.class);
+            Boolean connected =
+                    restClient.get()
+                            .uri(
+                                    "http://localhost:8083/connections/user/"
+                                            + senderId
+                                            + "/connected/"
+                                            + receiverId
+                            )
+                            .retrieve()
+                            .body(Boolean.class);
 
             if (!Boolean.TRUE.equals(connected)) {
 
@@ -207,14 +209,21 @@ public class PaymentService {
                     )
                     .body(request)
                     .retrieve()
-                    .toBodilessEntity();
+                    .toEntity(String.class);
 
         } catch (Exception exception) {
 
             throw new PaymentException(
-                    "Unable to create transaction"
+                    "Unable to create transaction: "
+                            + exception.getMessage()
             );
         }
+    }
+
+    public Page<Payment> getPayments(
+            Pageable pageable) {
+
+        return paymentRepository.findAll(pageable);
     }
 
     private PaymentResponse savePayment(
