@@ -274,6 +274,6 @@ public class PaymentService {
 
     private static class BankAccountResponse {
 
-        public Long accountId
+        public Long accountId;
     }
 }
