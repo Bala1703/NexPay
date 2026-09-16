@@ -5,7 +5,9 @@ pipeline {
 
         stage('Build Common') {
             steps {
-                bat 'mvnw.cmd -f common/pom.xml clean install -DskipTests'
+                dir('common') {
+                    bat 'mvnw.cmd clean install -DskipTests'
+                }
             }
         }
 
