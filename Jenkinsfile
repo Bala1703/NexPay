@@ -3,6 +3,12 @@ pipeline {
 
     stages {
 
+        stage('Build Common') {
+            steps {
+                bat 'mvnw.cmd -f common/pom.xml clean install -DskipTests'
+            }
+        }
+
         stage('Build & Test - Bank Account') {
             steps {
                 dir('services/bank-account-service') {
