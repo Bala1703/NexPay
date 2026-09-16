@@ -222,6 +222,5 @@ public class BankAccountServiceImpl implements BankAccountService {
                 bankAccount.getUpdatedAt()
         );
 
-        return response
     }
 }
