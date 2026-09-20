@@ -6,6 +6,7 @@ pipeline {
         stage('Detect Changes') {
             steps {
                 script {
+
                     def changedFiles = bat(
                         script: 'git diff --name-only HEAD~1 HEAD',
                         returnStdout: true
@@ -15,6 +16,49 @@ pipeline {
                     echo changedFiles
 
                     env.CHANGED_FILES = changedFiles
+
+                    // Default: nothing
+                    env.BUILD_COMMON = 'false'
+                    env.BUILD_USER = 'false'
+                    env.BUILD_CONNECTION = 'false'
+                    env.BUILD_BANK = 'false'
+                    env.BUILD_TRANSACTION = 'false'
+                    env.BUILD_PAYMENT = 'false'
+
+                    // Common affects User and Connection
+                    if (changedFiles.contains('common/')) {
+                        env.BUILD_COMMON = 'true'
+                        env.BUILD_USER = 'true'
+                        env.BUILD_CONNECTION = 'true'
+                    }
+
+                    // Individual service changes
+                    if (changedFiles.contains('services/user-service/')) {
+                        env.BUILD_USER = 'true'
+                    }
+
+                    if (changedFiles.contains('services/nexpay-connection-service/')) {
+                        env.BUILD_CONNECTION = 'true'
+                    }
+
+                    if (changedFiles.contains('services/bank-account-service/')) {
+                        env.BUILD_BANK = 'true'
+                    }
+
+                    if (changedFiles.contains('services/nexpay-transaction-service/')) {
+                        env.BUILD_TRANSACTION = 'true'
+                    }
+
+                    if (changedFiles.contains('services/nexpay-payment-service/')) {
+                        env.BUILD_PAYMENT = 'true'
+                    }
+
+                    echo "BUILD_COMMON = ${env.BUILD_COMMON}"
+                    echo "BUILD_USER = ${env.BUILD_USER}"
+                    echo "BUILD_CONNECTION = ${env.BUILD_CONNECTION}"
+                    echo "BUILD_BANK = ${env.BUILD_BANK}"
+                    echo "BUILD_TRANSACTION = ${env.BUILD_TRANSACTION}"
+                    echo "BUILD_PAYMENT = ${env.BUILD_PAYMENT}"
                 }
             }
         }
@@ -22,7 +66,7 @@ pipeline {
         stage('Build Common') {
             when {
                 expression {
-                    return env.CHANGED_FILES.contains('common/')
+                    env.BUILD_COMMON == 'true'
                 }
             }
             steps {
@@ -32,23 +76,10 @@ pipeline {
             }
         }
 
-        stage('Build Bank') {
-            when {
-                expression {
-                    return env.CHANGED_FILES.contains('services/bank-account-service/')
-                }
-            }
-            steps {
-                dir('services/bank-account-service') {
-                    bat 'mvnw.cmd clean test'
-                }
-            }
-        }
-
         stage('Build User') {
             when {
                 expression {
-                    return env.CHANGED_FILES.contains('services/user-service/')
+                    env.BUILD_USER == 'true'
                 }
             }
             steps {
@@ -61,7 +92,7 @@ pipeline {
         stage('Build Connection') {
             when {
                 expression {
-                    return env.CHANGED_FILES.contains('services/nexpay-connection-service/')
+                    env.BUILD_CONNECTION == 'true'
                 }
             }
             steps {
@@ -71,10 +102,23 @@ pipeline {
             }
         }
 
+        stage('Build Bank') {
+            when {
+                expression {
+                    env.BUILD_BANK == 'true'
+                }
+            }
+            steps {
+                dir('services/bank-account-service') {
+                    bat 'mvnw.cmd clean test'
+                }
+            }
+        }
+
         stage('Build Transaction') {
             when {
                 expression {
-                    return env.CHANGED_FILES.contains('services/nexpay-transaction-service/')
+                    env.BUILD_TRANSACTION == 'true'
                 }
             }
             steps {
@@ -87,7 +131,7 @@ pipeline {
         stage('Build Payment') {
             when {
                 expression {
-                    return env.CHANGED_FILES.contains('services/nexpay-payment-service/')
+                    env.BUILD_PAYMENT == 'true'
                 }
             }
             steps {
@@ -104,7 +148,7 @@ pipeline {
         }
 
         failure {
-            echo 'NexPay CI: One or more builds/tests failed'
+            echo 'NexPay CI: One or more builds/tests failed.'
         }
 
         always {
