@@ -23,7 +23,7 @@ public class DBUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
-                                "Email " + username + " does not match any user."
+                                "Email " + username + "does not match any user."
                         )
                 );
 

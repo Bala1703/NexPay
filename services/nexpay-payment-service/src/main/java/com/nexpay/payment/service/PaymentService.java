@@ -94,7 +94,7 @@ public class PaymentService {
         if (request == null) {
 
             throw new PaymentException(
-                    "Payment request cannot be null"
+                    "Payment request cannot be null "
             );
         }
 
