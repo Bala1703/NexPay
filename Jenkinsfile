@@ -104,7 +104,7 @@ pipeline {
         }
 
         failure {
-            echo 'NexPay CI: One or more builds/tests failed.'
+            echo 'NexPay CI: One or more builds/tests failed'
         }
 
         always {
