@@ -179,7 +179,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         if (bankAccount.getStatus() != BankAccountStatus.ACTIVE) {
 
             throw new IllegalStateException(
-                    "Bank account is not active."
+                    "Bank account is not active"
             );
         }
     }
