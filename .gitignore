@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### ai-cd
+ai-cicd-analyzer/

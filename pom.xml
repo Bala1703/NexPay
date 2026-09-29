@@ -18,7 +18,6 @@
 
     <modules>
         <module>common</module>
-        <module>services/ai-cicd-analyzer</module>
         <module>services/bank-account-service</module>
         <module>services/nexpay-connection-service</module>
         <module>services/nexpay-payment-service</module>
