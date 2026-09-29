@@ -161,7 +161,7 @@ pipeline {
         }
 
         failure {
-            echo 'NexPay CI: One or more builds/tests or SonarCloud analysis failed.'
+            echo 'NexPay CI: One or more builds/tests or SonarCloud analysis failed. '
         }
 
         always {
