@@ -140,15 +140,28 @@ pipeline {
                 }
             }
         }
+
+        stage('SonarCloud Analysis') {
+            steps {
+                withSonarQubeEnv('SonarCloud') {
+                    bat '''
+                        common\\mvnw.cmd -f pom.xml verify ^
+                        org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
+                        -Dsonar.organization=bala1703 ^
+                        -Dsonar.projectKey=Bala1703_NexPay
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'NexPay CI: Required builds/tests passed successfully.'
+            echo 'NexPay CI: Required builds/tests and SonarCloud analysis completed successfully.'
         }
 
         failure {
-            echo 'NexPay CI: One or more builds/tests failed.'
+            echo 'NexPay CI: One or more builds/tests or SonarCloud analysis failed.'
         }
 
         always {
