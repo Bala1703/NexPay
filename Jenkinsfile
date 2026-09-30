@@ -189,7 +189,7 @@ pipeline {
                             common\\mvnw.cmd -f pom.xml verify ^
                             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
                             -Dsonar.organization=bala1703 ^
-                            -Dsonar.projectKey=Bala17_NexPay
+                            -Dsonar.projectKey=Bala1703_NexPay
                         '''
                     }
                 }
@@ -226,142 +226,62 @@ pipeline {
                 echo D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt
             '''
 
-            echo 'Checking AI Analyzer connection...'
+            echo 'Sending build log to AI Analyzer...'
 
-            /*
-             * ONLY the connection to AI Analyzer has a 60-second limit.
-             *
-             * This does NOT limit:
-             * - Maven builds
-             * - Tests
-             * - SonarCloud
-             * - Ollama
-             * - Qwen3 response generation
-             */
+            powershell '''
+                $logFile = "$env:WORKSPACE\\ai-build-log.txt"
+                $aiAnalyzerUrl = "http://localhost:8200/api/analyze"
 
-            timeout(time: 1, unit: 'MINUTES') {
+                if (-not (Test-Path $logFile)) {
+                    Write-Error "AI build log not found: $logFile"
+                    exit 1
+                }
 
-                powershell '''
-                    $hostName = "localhost"
-                    $port = 8200
+                $buildLog = Get-Content -Path $logFile -Raw
 
-                    Write-Host ""
-                    Write-Host "===== AI ANALYZER CONNECTION CHECK ====="
-                    Write-Host "Host: $hostName"
-                    Write-Host "Port: $port"
-                    Write-Host "Connection timeout: 60 seconds"
-                    Write-Host ""
+                $requestBody = @{
+                    serviceName = "NexPay"
+                    buildNumber = [int]$env:BUILD_NUMBER
+                    buildLog = $buildLog
+                } | ConvertTo-Json -Depth 10
 
-                    $client = New-Object System.Net.Sockets.TcpClient
+                Write-Host ""
+                Write-Host "===== SENDING LOG TO AI ANALYZER ====="
+                Write-Host "URL: $aiAnalyzerUrl"
+                Write-Host "AI processing timeout: NONE"
+                Write-Host ""
 
-                    try {
+                try {
 
-                        $asyncResult = $client.BeginConnect(
-                            $hostName,
-                            $port,
-                            $null,
-                            $null
-                        )
-
-                        $connected = $asyncResult.AsyncWaitHandle.WaitOne(
-                            60000
-                        )
-
-                        if (-not $connected) {
-
-                            Write-Host ""
-                            Write-Host "===== AI ANALYZER CONNECTION TIMEOUT ====="
-                            Write-Host "AI Analyzer did not accept a connection within 60 seconds."
-                            Write-Host "Expected: http://localhost:8200"
-                            Write-Host "==========================================="
-                            Write-Host ""
-
-                            $client.Close()
-                            exit 1
-                        }
-
-                        $client.EndConnect($asyncResult)
-
-                        Write-Host "AI Analyzer connection established."
-                        Write-Host ""
-
-                    }
-                    catch {
-
-                        Write-Host ""
-                        Write-Host "===== AI ANALYZER CONNECTION FAILED ====="
-                        Write-Host $_.Exception.Message
-                        Write-Host "=========================================="
-                        Write-Host ""
-
-                        $client.Close()
-                        exit 1
-                    }
-                    finally {
-
-                        if ($client) {
-                            $client.Close()
-                        }
-                    }
-                '''
-
-                echo 'AI Analyzer is reachable. Sending build log...'
-
-                powershell '''
-                    $logFile = "$env:WORKSPACE\\ai-build-log.txt"
-                    $aiAnalyzerUrl = "http://localhost:8200/api/analyze"
-
-                    if (-not (Test-Path $logFile)) {
-                        Write-Error "AI build log not found: $logFile"
-                        exit 1
-                    }
-
-                    $buildLog = Get-Content -Path $logFile -Raw
-
-                    $requestBody = @{
-                        serviceName = "NexPay"
-                        buildNumber = [int]$env:BUILD_NUMBER
-                        buildLog = $buildLog
-                    } | ConvertTo-Json -Depth 10
+                    $response = Invoke-RestMethod `
+                        -Uri $aiAnalyzerUrl `
+                        -Method POST `
+                        -ContentType "application/json" `
+                        -Body $requestBody
 
                     Write-Host ""
-                    Write-Host "===== SENDING LOG TO AI ANALYZER ====="
-                    Write-Host "URL: $aiAnalyzerUrl"
-                    Write-Host "AI processing timeout: NONE"
+                    Write-Host "===== AI ANALYSIS RESULT ====="
+                    $response | ConvertTo-Json -Depth 10
+                    Write-Host "================================"
                     Write-Host ""
 
-                    try {
+                }
+                catch {
 
-                        $response = Invoke-RestMethod `
-                            -Uri $aiAnalyzerUrl `
-                            -Method POST `
-                            -ContentType "application/json" `
-                            -Body $requestBody
+                    Write-Host ""
+                    Write-Host "===== AI ANALYZER ERROR ====="
+                    Write-Host $_.Exception.Message
+                    Write-Host "=============================="
+                    Write-Host ""
 
-                        Write-Host ""
-                        Write-Host "===== AI ANALYSIS RESULT ====="
-                        $response | ConvertTo-Json -Depth 10
-                        Write-Host "================================"
-                        Write-Host ""
-
-                    }
-                    catch {
-
-                        Write-Host ""
-                        Write-Host "===== AI ANALYZER ERROR ====="
-                        Write-Host $_.Exception.Message
-                        Write-Host "=============================="
-                        Write-Host ""
-
-                        exit 1
-                    }
-                '''
-            }
+                    exit 1
+                }
+            '''
         }
 
         success {
 
-            echo 'NexPay CI: Required builds/tests and SonarCloud analysis completed successfully. '
+            echo 'NexPay CI: Required builds/tests and SonarCloud analysis completed successfully.'
         }
 
         always {
