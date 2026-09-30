@@ -70,8 +70,8 @@ C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline>common\mvnw.cmd -f 
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests
-16:10:03.466 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests]: AiCicdAnalyzerApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-16:10:03.538 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplication for test class com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests
+16:36:19.448 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests]: AiCicdAnalyzerApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:36:19.556 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplication for test class com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -82,17 +82,17 @@ C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline>common\mvnw.cmd -f 
 
  :: Spring Boot ::                (v4.0.0)
 
-2026-09-30T16:10:03.835+05:30  INFO 6364 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : Starting AiCicdAnalyzerApplicationTests using Java 21.0.12.1 with PID 6364 (started by HP-PC$ in C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline\services\ai-cicd-analyzer)
-2026-09-30T16:10:03.836+05:30  INFO 6364 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : No active profile set, falling back to 1 default profile: "default"
-2026-09-30T16:10:05.292+05:30  INFO 6364 --- [ai-cicd-analyzer] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
-2026-09-30T16:10:05.331+05:30  INFO 6364 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : Started AiCicdAnalyzerApplicationTests in 1.695 seconds (process running for 2.55)
+2026-09-30T16:36:19.978+05:30  INFO 11396 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : Starting AiCicdAnalyzerApplicationTests using Java 21.0.12.1 with PID 11396 (started by HP-PC$ in C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline\services\ai-cicd-analyzer)
+2026-09-30T16:36:19.980+05:30  INFO 11396 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T16:36:21.975+05:30  INFO 11396 --- [ai-cicd-analyzer] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-09-30T16:36:22.021+05:30  INFO 11396 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : Started AiCicdAnalyzerApplicationTests in 2.317 seconds (process running for 3.537)
 Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
 OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 WARNING: A Java agent has been loaded dynamically (C:\Windows\system32\config\systemprofile\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
 WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
 WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
 WARNING: Dynamic loading of agents will be disallowed by default in a future release
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.525 s -- in com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.842 s -- in com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests
 [INFO] 
 [INFO] Results:
 [INFO] 
@@ -130,8 +130,8 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running com.nexpay.bankaccount.BankAccountServiceApplicationTests
-16:10:07.119 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.nexpay.bankaccount.BankAccountServiceApplicationTests]: BankAccountServiceApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-16:10:07.187 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.nexpay.bankaccount.BankAccountServiceApplication for test class com.nexpay.bankaccount.BankAccountServiceApplicationTests
+16:36:24.705 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.nexpay.bankaccount.BankAccountServiceApplicationTests]: BankAccountServiceApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:36:24.823 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.nexpay.bankaccount.BankAccountServiceApplication for test class com.nexpay.bankaccount.BankAccountServiceApplicationTests
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -142,19 +142,19 @@ WARNING: Dynamic loading of agents will be disallowed by default in a future rel
 
  :: Spring Boot ::                (v4.0.0)
 
-2026-09-30T16:10:07.474+05:30  INFO 23180 --- [bank-account-service] [           main] c.n.b.BankAccountServiceApplicationTests : Starting BankAccountServiceApplicationTests using Java 21.0.12.1 with PID 23180 (started by HP-PC$ in C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline\services\bank-account-service)
-2026-09-30T16:10:07.475+05:30  INFO 23180 --- [bank-account-service] [           main] c.n.b.BankAccountServiceApplicationTests : No active profile set, falling back to 1 default profile: "default"
-2026-09-30T16:10:08.055+05:30  INFO 23180 --- [bank-account-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-09-30T16:10:08.097+05:30  INFO 23180 --- [bank-account-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 33 ms. Found 1 JPA repository interface.
-2026-09-30T16:10:08.477+05:30  INFO 23180 --- [bank-account-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-09-30T16:10:08.531+05:30  INFO 23180 --- [bank-account-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 7.1.8.Final
-2026-09-30T16:10:08.915+05:30  INFO 23180 --- [bank-account-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-09-30T16:10:08.942+05:30  INFO 23180 --- [bank-account-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-09-30T16:10:10.019+05:30  WARN 23180 --- [bank-account-service] [           main] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08S01
-2026-09-30T16:10:10.019+05:30  WARN 23180 --- [bank-account-service] [           main] org.hibernate.orm.jdbc.error             : Communications link failure
+2026-09-30T16:36:25.216+05:30  INFO 12156 --- [bank-account-service] [           main] c.n.b.BankAccountServiceApplicationTests : Starting BankAccountServiceApplicationTests using Java 21.0.12.1 with PID 12156 (started by HP-PC$ in C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline\services\bank-account-service)
+2026-09-30T16:36:25.217+05:30  INFO 12156 --- [bank-account-service] [           main] c.n.b.BankAccountServiceApplicationTests : No active profile set, falling back to 1 default profile: "default"
+2026-09-30T16:36:25.997+05:30  INFO 12156 --- [bank-account-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-30T16:36:26.057+05:30  INFO 12156 --- [bank-account-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 48 ms. Found 1 JPA repository interface.
+2026-09-30T16:36:26.555+05:30  INFO 12156 --- [bank-account-service] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-30T16:36:26.615+05:30  INFO 12156 --- [bank-account-service] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 7.1.8.Final
+2026-09-30T16:36:27.257+05:30  INFO 12156 --- [bank-account-service] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-30T16:36:27.340+05:30  INFO 12156 --- [bank-account-service] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-30T16:36:28.544+05:30  WARN 12156 --- [bank-account-service] [           main] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 0, SQLState: 08S01
+2026-09-30T16:36:28.545+05:30  WARN 12156 --- [bank-account-service] [           main] org.hibernate.orm.jdbc.error             : Communications link failure
 
 The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-2026-09-30T16:10:10.023+05:30  WARN 23180 --- [bank-account-service] [           main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query JDBC database metadata
+2026-09-30T16:36:28.546+05:30  WARN 12156 --- [bank-account-service] [           main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query JDBC database metadata
 
 org.hibernate.exception.JDBCConnectionException: Unable to obtain isolated JDBC connection [Communications link failure
 
@@ -338,8 +338,8 @@ Caused by: java.net.ConnectException: Connection refused: getsockopt
 	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:53) ~[mysql-connector-j-9.5.0.jar:9.5.0]
 	... 144 common frames omitted
 
-2026-09-30T16:10:10.055+05:30 ERROR 23180 --- [bank-account-service] [           main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
-2026-09-30T16:10:10.056+05:30  WARN 23180 --- [bank-account-service] [           main] o.s.w.c.s.GenericWebApplicationContext   : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
+2026-09-30T16:36:28.574+05:30 ERROR 12156 --- [bank-account-service] [           main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
+2026-09-30T16:36:28.576+05:30  WARN 12156 --- [bank-account-service] [           main] o.s.w.c.s.GenericWebApplicationContext   : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
 
 
 
@@ -1505,10 +1505,10 @@ Unconditional classes:
 
 
 
-2026-09-30T16:10:10.117+05:30  INFO 23180 --- [bank-account-service] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-09-30T16:36:28.667+05:30  INFO 12156 --- [bank-account-service] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
 
 Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2026-09-30T16:10:10.131+05:30 ERROR 23180 --- [bank-account-service] [           main] o.s.boot.SpringApplication               : Application run failed
+2026-09-30T16:36:28.686+05:30 ERROR 12156 --- [bank-account-service] [           main] o.s.boot.SpringApplication               : Application run failed
 
 org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1817) ~[spring-beans-7.0.1.jar:7.0.1]
@@ -1649,7 +1649,7 @@ Caused by: org.hibernate.HibernateException: Unable to determine Dialect without
 	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:262) ~[hibernate-core-7.1.8.Final.jar:7.1.8.Final]
 	... 122 common frames omitted
 
-2026-09-30T16:10:10.136+05:30  WARN 23180 --- [bank-account-service] [           main] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [com.nexpay.bankaccount.BankAccountServiceApplicationTests@6f67ece5]
+2026-09-30T16:36:28.696+05:30  WARN 12156 --- [bank-account-service] [           main] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [com.nexpay.bankaccount.BankAccountServiceApplicationTests@6f67ece5]
 
 java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@33765d22 testClass = com.nexpay.bankaccount.BankAccountServiceApplicationTests, locations = [], classes = [com.nexpay.bankaccount.BankAccountServiceApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.context.PropertyMappingContextCustomizer@0, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@180e6ac4, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@7fcbe147, org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@c7a975a, org.springframework.test.context.support.DynamicPropertiesContextCustomizer@0, org.springframework.boot.micrometer.metrics.test.autoconfigure.MetricsContextCustomizerFactory$DisableMetricsExportContextCustomizer@1f, org.springframework.boot.webmvc.test.autoconfigure.WebDriverContextCustomizer@76a36b71, org.springframework.boot.web.server.context.SpringBootTestRandomPortContextCustomizerFactory$Customizer@6ffab045, org.springframework.boot.test.context.SpringBootTestAnnotation@c129ed62], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.lambda$loadContext$0(DefaultCacheAwareContextLoaderDelegate.java:195) ~[spring-test-7.0.1.jar:7.0.1]
@@ -1793,8 +1793,8 @@ Caused by: org.hibernate.HibernateException: Unable to determine Dialect without
 	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:262) ~[hibernate-core-7.1.8.Final.jar:7.1.8.Final]
 	... 122 common frames omitted
 
-[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.190 s <<< FAILURE! -- in com.nexpay.bankaccount.BankAccountServiceApplicationTests
-[ERROR] com.nexpay.bankaccount.BankAccountServiceApplicationTests.contextLoads -- Time elapsed: 0.005 s <<< ERROR!
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 4.225 s <<< FAILURE! -- in com.nexpay.bankaccount.BankAccountServiceApplicationTests
+[ERROR] com.nexpay.bankaccount.BankAccountServiceApplicationTests.contextLoads -- Time elapsed: 0.011 s <<< ERROR!
 java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@33765d22 testClass = com.nexpay.bankaccount.BankAccountServiceApplicationTests, locations = [], classes = [com.nexpay.bankaccount.BankAccountServiceApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.context.PropertyMappingContextCustomizer@0, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@180e6ac4, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@7fcbe147, org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@c7a975a, org.springframework.test.context.support.DynamicPropertiesContextCustomizer@0, org.springframework.boot.micrometer.metrics.test.autoconfigure.MetricsContextCustomizerFactory$DisableMetricsExportContextCustomizer@1f, org.springframework.boot.webmvc.test.autoconfigure.WebDriverContextCustomizer@76a36b71, org.springframework.boot.web.server.context.SpringBootTestRandomPortContextCustomizerFactory$Customizer@6ffab045, org.springframework.boot.test.context.SpringBootTestAnnotation@c129ed62], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.lambda$loadContext$0(DefaultCacheAwareContextLoaderDelegate.java:195)
 	at org.springframework.test.context.cache.DefaultContextCache.put(DefaultContextCache.java:172)
@@ -1888,9 +1888,9 @@ Caused by: org.hibernate.HibernateException: Unable to determine Dialect without
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary:
 [INFO] 
-[INFO] nexpay-common 0.0.1-SNAPSHOT ....................... SUCCESS [  0.803 s]
-[INFO] ai-cicd-analyzer 0.0.1-SNAPSHOT .................... SUCCESS [  4.009 s]
-[INFO] bank-account-service 0.0.1-SNAPSHOT ................ FAILURE [  4.069 s]
+[INFO] nexpay-common 0.0.1-SNAPSHOT ....................... SUCCESS [  0.988 s]
+[INFO] ai-cicd-analyzer 0.0.1-SNAPSHOT .................... SUCCESS [  6.100 s]
+[INFO] bank-account-service 0.0.1-SNAPSHOT ................ FAILURE [  5.358 s]
 [INFO] nexpay-connection-service 0.0.1-SNAPSHOT ........... SKIPPED
 [INFO] nexpay-payment-service 0.0.1-SNAPSHOT .............. SKIPPED
 [INFO] nexpay-transaction-service 0.0.1-SNAPSHOT .......... SKIPPED
@@ -1899,8 +1899,8 @@ Caused by: org.hibernate.HibernateException: Unable to determine Dialect without
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  9.261 s
-[INFO] Finished at: 2026-09-30T16:10:10+05:30
+[INFO] Total time:  13.005 s
+[INFO] Finished at: 2026-09-30T16:36:28+05:30
 [INFO] ------------------------------------------------------------------------
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test (default-test) on project bank-account-service: 
 [ERROR] 

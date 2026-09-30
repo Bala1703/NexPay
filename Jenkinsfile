@@ -229,6 +229,7 @@ pipeline {
 
             powershell '''
                 $logFile = "$env:WORKSPACE\\ai-build-log.txt"
+                $aiAnalyzerUrl = "http://localhost:8200/api/analyze"
 
                 if (-not (Test-Path $logFile)) {
                     Write-Error "AI build log not found: $logFile"
@@ -244,17 +245,19 @@ pipeline {
                 } | ConvertTo-Json -Depth 10
 
                 Write-Host ""
-                Write-Host "===== SENDING LOG TO AI ANALYZER ====="
-                Write-Host "URL: http://localhost:8200/api/analyze"
+                Write-Host "===== CONNECTING TO AI ANALYZER ====="
+                Write-Host "URL: $aiAnalyzerUrl"
+                Write-Host "Timeout: 60 seconds"
                 Write-Host ""
 
                 try {
 
                     $response = Invoke-RestMethod `
-                        -Uri "http://localhost:8200/api/analyze" `
+                        -Uri $aiAnalyzerUrl `
                         -Method POST `
                         -ContentType "application/json" `
-                        -Body $requestBody
+                        -Body $requestBody `
+                        -TimeoutSec 60
 
                     Write-Host ""
                     Write-Host "===== AI ANALYSIS RESULT ====="
