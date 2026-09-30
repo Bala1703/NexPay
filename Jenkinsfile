@@ -5,60 +5,69 @@ pipeline {
 
         stage('Detect Changes') {
             steps {
-                script {
+                tee('ai-build-log.txt') {
+                    script {
 
-                    def changedFiles = bat(
-                        script: 'git diff --name-only HEAD~1 HEAD',
-                        returnStdout: true
-                    ).trim()
+                        def changedFiles = bat(
+                            script: 'git diff --name-only HEAD~1 HEAD',
+                            returnStdout: true
+                        ).trim()
 
-                    echo "Changed files:"
-                    echo changedFiles
+                        echo "Changed files:"
+                        echo changedFiles
 
-                    env.CHANGED_FILES = changedFiles
+                        env.CHANGED_FILES = changedFiles
 
-                    // Default: nothing
-                    env.BUILD_COMMON = 'false'
-                    env.BUILD_USER = 'false'
-                    env.BUILD_CONNECTION = 'false'
-                    env.BUILD_BANK = 'false'
-                    env.BUILD_TRANSACTION = 'false'
-                    env.BUILD_PAYMENT = 'false'
+                        // Default: nothing
+                        env.BUILD_COMMON = 'false'
+                        env.BUILD_USER = 'false'
+                        env.BUILD_CONNECTION = 'false'
+                        env.BUILD_BANK = 'false'
+                        env.BUILD_TRANSACTION = 'false'
+                        env.BUILD_PAYMENT = 'false'
+                        env.BUILD_AI_ANALYZER = 'false'
 
-                    // Common affects User and Connection
-                    if (changedFiles.contains('common/')) {
-                        env.BUILD_COMMON = 'true'
-                        env.BUILD_USER = 'true'
-                        env.BUILD_CONNECTION = 'true'
+                        // Common affects User and Connection
+                        if (changedFiles.contains('common/')) {
+                            env.BUILD_COMMON = 'true'
+                            env.BUILD_USER = 'true'
+                            env.BUILD_CONNECTION = 'true'
+                        }
+
+                        // Individual service changes
+                        if (changedFiles.contains('services/user-service/')) {
+                            env.BUILD_USER = 'true'
+                        }
+
+                        if (changedFiles.contains('services/nexpay-connection-service/')) {
+                            env.BUILD_CONNECTION = 'true'
+                        }
+
+                        if (changedFiles.contains('services/bank-account-service/')) {
+                            env.BUILD_BANK = 'true'
+                        }
+
+                        if (changedFiles.contains('services/nexpay-transaction-service/')) {
+                            env.BUILD_TRANSACTION = 'true'
+                        }
+
+                        if (changedFiles.contains('services/nexpay-payment-service/')) {
+                            env.BUILD_PAYMENT = 'true'
+                        }
+
+                        // AI CI/CD Analyzer changes
+                        if (changedFiles.contains('services/ai-cicd-analyzer/')) {
+                            env.BUILD_AI_ANALYZER = 'true'
+                        }
+
+                        echo "BUILD_COMMON = ${env.BUILD_COMMON}"
+                        echo "BUILD_USER = ${env.BUILD_USER}"
+                        echo "BUILD_CONNECTION = ${env.BUILD_CONNECTION}"
+                        echo "BUILD_BANK = ${env.BUILD_BANK}"
+                        echo "BUILD_TRANSACTION = ${env.BUILD_TRANSACTION}"
+                        echo "BUILD_PAYMENT = ${env.BUILD_PAYMENT}"
+                        echo "BUILD_AI_ANALYZER = ${env.BUILD_AI_ANALYZER}"
                     }
-
-                    // Individual service changes
-                    if (changedFiles.contains('services/user-service/')) {
-                        env.BUILD_USER = 'true'
-                    }
-
-                    if (changedFiles.contains('services/nexpay-connection-service/')) {
-                        env.BUILD_CONNECTION = 'true'
-                    }
-
-                    if (changedFiles.contains('services/bank-account-service/')) {
-                        env.BUILD_BANK = 'true'
-                    }
-
-                    if (changedFiles.contains('services/nexpay-transaction-service/')) {
-                        env.BUILD_TRANSACTION = 'true'
-                    }
-
-                    if (changedFiles.contains('services/nexpay-payment-service/')) {
-                        env.BUILD_PAYMENT = 'true'
-                    }
-
-                    echo "BUILD_COMMON = ${env.BUILD_COMMON}"
-                    echo "BUILD_USER = ${env.BUILD_USER}"
-                    echo "BUILD_CONNECTION = ${env.BUILD_CONNECTION}"
-                    echo "BUILD_BANK = ${env.BUILD_BANK}"
-                    echo "BUILD_TRANSACTION = ${env.BUILD_TRANSACTION}"
-                    echo "BUILD_PAYMENT = ${env.BUILD_PAYMENT}"
                 }
             }
         }
@@ -70,8 +79,10 @@ pipeline {
                 }
             }
             steps {
-                dir('common') {
-                    bat 'mvnw.cmd clean install -DskipTests'
+                tee('ai-build-log.txt') {
+                    dir('common') {
+                        bat 'mvnw.cmd clean install -DskipTests'
+                    }
                 }
             }
         }
@@ -83,8 +94,10 @@ pipeline {
                 }
             }
             steps {
-                dir('services/user-service') {
-                    bat 'mvnw.cmd clean test'
+                tee('ai-build-log.txt') {
+                    dir('services/user-service') {
+                        bat 'mvnw.cmd clean test'
+                    }
                 }
             }
         }
@@ -96,8 +109,10 @@ pipeline {
                 }
             }
             steps {
-                dir('services/nexpay-connection-service') {
-                    bat 'mvnw.cmd clean test'
+                tee('ai-build-log.txt') {
+                    dir('services/nexpay-connection-service') {
+                        bat 'mvnw.cmd clean test'
+                    }
                 }
             }
         }
@@ -109,8 +124,10 @@ pipeline {
                 }
             }
             steps {
-                dir('services/bank-account-service') {
-                    bat 'mvnw.cmd clean test'
+                tee('ai-build-log.txt') {
+                    dir('services/bank-account-service') {
+                        bat 'mvnw.cmd clean test'
+                    }
                 }
             }
         }
@@ -122,8 +139,10 @@ pipeline {
                 }
             }
             steps {
-                dir('services/nexpay-transaction-service') {
-                    bat 'mvnw.cmd clean test'
+                tee('ai-build-log.txt') {
+                    dir('services/nexpay-transaction-service') {
+                        bat 'mvnw.cmd clean test'
+                    }
                 }
             }
         }
@@ -135,35 +154,54 @@ pipeline {
                 }
             }
             steps {
-                dir('services/nexpay-payment-service') {
-                    bat 'mvnw.cmd clean test'
+                tee('ai-build-log.txt') {
+                    dir('services/nexpay-payment-service') {
+                        bat 'mvnw.cmd clean test'
+                    }
+                }
+            }
+        }
+
+        stage('Build AI Analyzer') {
+            when {
+                expression {
+                    env.BUILD_AI_ANALYZER == 'true'
+                }
+            }
+            steps {
+                tee('ai-build-log.txt') {
+                    dir('services/ai-cicd-analyzer') {
+                        bat 'mvnw.cmd clean test'
+                    }
                 }
             }
         }
 
         /*
-         * TEMPORARY TEST STAGE
+         * TEMPORARY FAILURE TEST
          *
-         * This intentionally fails the pipeline so that
-         * post -> failure can be tested.
-         *
-         * Remove this stage after log-file testing is complete.
+         * Remove this after testing log capture.
          */
         stage('Test AI Failure') {
             steps {
-                bat 'exit /b 1'
+                tee('ai-build-log.txt') {
+                    bat 'echo This is a test failure'
+                    bat 'exit /b 1'
+                }
             }
         }
 
         stage('SonarCloud Analysis') {
             steps {
-                withSonarQubeEnv('SonarCloud') {
-                    bat '''
-                        common\\mvnw.cmd -f pom.xml verify ^
-                        org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
-                        -Dsonar.organization=bala1703 ^
-                        -Dsonar.projectKey=Bala1703_NexPay
-                    '''
+                tee('ai-build-log.txt') {
+                    withSonarQubeEnv('SonarCloud') {
+                        bat '''
+                            common\\mvnw.cmd -f pom.xml verify ^
+                            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
+                            -Dsonar.organization=bala1703 ^
+                            -Dsonar.projectKey=Bala1703_NexPay
+                        '''
+                    }
                 }
             }
         }
@@ -176,39 +214,18 @@ pipeline {
         }
 
         failure {
-            echo 'NexPay CI: Build failed. Capturing Jenkins console log.'
+            echo 'NexPay CI: Build failed. Checking captured AI log.'
 
-            script {
-
-                // Get up to 2,000 lines from the Jenkins console log
-                def buildLog = currentBuild.rawBuild
-                        .getLog(2000)
-                        .join('\n')
-
-                // Desired log directory
-                def logDirectory =
-                        'D:\\AI Powered CICD Optimization\\NexPay\\logs'
-
-                // Create the directory if it does not exist
-                bat """
-                    if not exist "${logDirectory}" (
-                        mkdir "${logDirectory}"
-                    )
-                """
-
-                // Write Jenkins console log to the desired location
-                writeFile(
-                    file: 'ai-build-log.txt',
-                    text: buildLog
+            bat '''
+                if not exist "D:\\AI Powered CICD Optimization\\NexPay\\logs" (
+                    mkdir "D:\\AI Powered CICD Optimization\\NexPay\\logs"
                 )
 
-                bat """
-                    copy /Y "ai-build-log.txt" "${logDirectory}\\ai-build-log.txt"
-                """
+                copy /Y "ai-build-log.txt" "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
+            '''
 
-                echo 'Jenkins console log saved successfully.'
-                echo "Log location: ${logDirectory}\\ai-build-log.txt"
-            }
+            echo 'Jenkins build log copied successfully.'
+            echo 'Log location: D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt'
         }
 
         always {
