@@ -280,7 +280,7 @@ pipeline {
         }
 
         success {
-            echo 'NexPay CI: Required builds/tests and SonarCloud analysis completed successfully. '
+            echo 'NexPay CI: Required builds/tests and SonarCloud analysis completed successfully.'
         }
 
         always {
