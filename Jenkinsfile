@@ -6,13 +6,9 @@ pipeline {
         stage('Prepare AI Log') {
             steps {
                 bat '''
-                    if exist "ai-build-log.txt" (
-                        del /F /Q "ai-build-log.txt"
+                    if exist "%WORKSPACE%\\ai-build-log.txt" (
+                        del /F /Q "%WORKSPACE%\\ai-build-log.txt"
                     )
-
-                    echo ======================================== > "ai-build-log.txt"
-                    echo NexPay Jenkins CI Build Log >> "ai-build-log.txt"
-                    echo ======================================== >> "ai-build-log.txt"
                 '''
             }
         }
@@ -28,12 +24,6 @@ pipeline {
 
                     echo "Changed files:"
                     echo changedFiles
-
-                    bat """
-                        echo. >> "ai-build-log.txt"
-                        echo ===== Detect Changes ===== >> "ai-build-log.txt"
-                        echo ${changedFiles.replace('"', '""')} >> "ai-build-log.txt"
-                    """
 
                     env.CHANGED_FILES = changedFiles
 
@@ -73,7 +63,7 @@ pipeline {
                         env.BUILD_PAYMENT = 'true'
                     }
 
-                    // AI CI/CD Analyzer changes
+                    // AI CI/CD Analyzer
                     if (changedFiles.contains('services/ai-cicd-analyzer/')) {
                         env.BUILD_AI_ANALYZER = 'true'
                     }
@@ -96,17 +86,11 @@ pipeline {
                 }
             }
             steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== Build Common ===== >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    call common\\mvnw.cmd clean install -DskipTests >> "%WORKSPACE%\\ai-build-log.txt" 2>&1
-
-                    if %ERRORLEVEL% NEQ 0 (
-                        type "%WORKSPACE%\\ai-build-log.txt"
-                        exit /b 1
-                    )
-                '''
+                dir('common') {
+                    tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                        bat 'mvnw.cmd clean install -DskipTests'
+                    }
+                }
             }
         }
 
@@ -117,19 +101,11 @@ pipeline {
                 }
             }
             steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== Build User Service ===== >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    cd services\\user-service
-
-                    call mvnw.cmd clean test >> "%WORKSPACE%\\ai-build-log.txt" 2>&1
-
-                    if %ERRORLEVEL% NEQ 0 (
-                        type "%WORKSPACE%\\ai-build-log.txt"
-                        exit /b 1
-                    )
-                '''
+                dir('services/user-service') {
+                    tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                        bat 'mvnw.cmd clean test'
+                    }
+                }
             }
         }
 
@@ -140,19 +116,11 @@ pipeline {
                 }
             }
             steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== Build Connection Service ===== >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    cd services\\nexpay-connection-service
-
-                    call mvnw.cmd clean test >> "%WORKSPACE%\\ai-build-log.txt" 2>&1
-
-                    if %ERRORLEVEL% NEQ 0 (
-                        type "%WORKSPACE%\\ai-build-log.txt"
-                        exit /b 1
-                    )
-                '''
+                dir('services/nexpay-connection-service') {
+                    tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                        bat 'mvnw.cmd clean test'
+                    }
+                }
             }
         }
 
@@ -163,19 +131,11 @@ pipeline {
                 }
             }
             steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== Build Bank Account Service ===== >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    cd services\\bank-account-service
-
-                    call mvnw.cmd clean test >> "%WORKSPACE%\\ai-build-log.txt" 2>&1
-
-                    if %ERRORLEVEL% NEQ 0 (
-                        type "%WORKSPACE%\\ai-build-log.txt"
-                        exit /b 1
-                    )
-                '''
+                dir('services/bank-account-service') {
+                    tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                        bat 'mvnw.cmd clean test'
+                    }
+                }
             }
         }
 
@@ -186,19 +146,11 @@ pipeline {
                 }
             }
             steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== Build Transaction Service ===== >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    cd services\\nexpay-transaction-service
-
-                    call mvnw.cmd clean test >> "%WORKSPACE%\\ai-build-log.txt" 2>&1
-
-                    if %ERRORLEVEL% NEQ 0 (
-                        type "%WORKSPACE%\\ai-build-log.txt"
-                        exit /b 1
-                    )
-                '''
+                dir('services/nexpay-transaction-service') {
+                    tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                        bat 'mvnw.cmd clean test'
+                    }
+                }
             }
         }
 
@@ -209,19 +161,11 @@ pipeline {
                 }
             }
             steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== Build Payment Service ===== >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    cd services\\nexpay-payment-service
-
-                    call mvnw.cmd clean test >> "%WORKSPACE%\\ai-build-log.txt" 2>&1
-
-                    if %ERRORLEVEL% NEQ 0 (
-                        type "%WORKSPACE%\\ai-build-log.txt"
-                        exit /b 1
-                    )
-                '''
+                dir('services/nexpay-payment-service') {
+                    tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                        bat 'mvnw.cmd clean test'
+                    }
+                }
             }
         }
 
@@ -232,61 +176,25 @@ pipeline {
                 }
             }
             steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== Build AI CI/CD Analyzer ===== >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    cd services\\ai-cicd-analyzer
-
-                    call mvnw.cmd clean test >> "%WORKSPACE%\\ai-build-log.txt" 2>&1
-
-                    if %ERRORLEVEL% NEQ 0 (
-                        type "%WORKSPACE%\\ai-build-log.txt"
-                        exit /b 1
-                    )
-                '''
-            }
-        }
-
-        /*
-         * TEMPORARY FAILURE TEST
-         *
-         * Keep this only while testing AI failure analysis.
-         */
-        stage('Test AI Failure') {
-            steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== TEST FAILURE ===== >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    echo This is a test failure >> "%WORKSPACE%\\ai-build-log.txt"
-
-                    type "%WORKSPACE%\\ai-build-log.txt"
-
-                    exit /b 1
-                '''
+                dir('services/ai-cicd-analyzer') {
+                    tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                        bat 'mvnw.cmd clean test'
+                    }
+                }
             }
         }
 
         stage('SonarCloud Analysis') {
             steps {
-                bat '''
-                    echo. >> "%WORKSPACE%\\ai-build-log.txt"
-                    echo ===== SonarCloud Analysis ===== >> "%WORKSPACE%\\ai-build-log.txt"
-                '''
-
-                withSonarQubeEnv('SonarCloud') {
-                    bat '''
-                        common\\mvnw.cmd -f pom.xml verify ^
-                        org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
-                        -Dsonar.organization=bala1703 ^
-                        -Dsonar.projectKey=Bala1703_NexPay >> "%WORKSPACE%\\ai-build-log.txt" 2>&1
-
-                        if %ERRORLEVEL% NEQ 0 (
-                            type "%WORKSPACE%\\ai-build-log.txt"
-                            exit /b 1
-                        )
-                    '''
+                tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                    withSonarQubeEnv('SonarCloud') {
+                        bat '''
+                            common\\mvnw.cmd -f pom.xml verify ^
+                            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
+                            -Dsonar.organization=bala1703 ^
+                            -Dsonar.projectKey=Bala1703_NexPay
+                        '''
+                    }
                 }
             }
         }
@@ -299,8 +207,15 @@ pipeline {
 
             bat '''
                 echo.
-                echo ===== Final AI Build Log =====
-                type "%WORKSPACE%\\ai-build-log.txt"
+                echo ===== AI BUILD LOG =====
+                echo.
+
+                if exist "%WORKSPACE%\\ai-build-log.txt" (
+                    type "%WORKSPACE%\\ai-build-log.txt"
+                ) else (
+                    echo ERROR: ai-build-log.txt was not created.
+                    exit /b 1
+                )
 
                 if not exist "D:\\AI Powered CICD Optimization\\NexPay\\logs" (
                     mkdir "D:\\AI Powered CICD Optimization\\NexPay\\logs"
@@ -308,14 +223,8 @@ pipeline {
 
                 copy /Y "%WORKSPACE%\\ai-build-log.txt" "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
 
-                if %ERRORLEVEL% NEQ 0 (
-                    echo ERROR: Failed to copy AI build log.
-                    exit /b 1
-                )
-
                 echo.
-                echo AI build log copied successfully.
-                echo Location:
+                echo AI build log copied to:
                 echo D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt
             '''
         }
