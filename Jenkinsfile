@@ -35,14 +35,12 @@ pipeline {
                     env.BUILD_PAYMENT = 'false'
                     env.BUILD_AI_ANALYZER = 'false'
 
-                    // Common affects User and Connection
                     if (changedFiles.contains('common/')) {
                         env.BUILD_COMMON = 'true'
                         env.BUILD_USER = 'true'
                         env.BUILD_CONNECTION = 'true'
                     }
 
-                    // Individual service changes
                     if (changedFiles.contains('services/user-service/')) {
                         env.BUILD_USER = 'true'
                     }
@@ -63,7 +61,6 @@ pipeline {
                         env.BUILD_PAYMENT = 'true'
                     }
 
-                    // AI CI/CD Analyzer
                     if (changedFiles.contains('services/ai-cicd-analyzer/')) {
                         env.BUILD_AI_ANALYZER = 'true'
                     }
@@ -226,6 +223,56 @@ pipeline {
                 echo.
                 echo AI build log copied to:
                 echo D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt
+            '''
+
+            echo 'Sending build log to AI Analyzer...'
+
+            powershell '''
+                $logFile = "$env:WORKSPACE\\ai-build-log.txt"
+
+                if (-not (Test-Path $logFile)) {
+                    Write-Error "AI build log not found: $logFile"
+                    exit 1
+                }
+
+                $buildLog = Get-Content -Path $logFile -Raw
+
+                $requestBody = @{
+                    serviceName = "NexPay"
+                    buildNumber = [int]$env:BUILD_NUMBER
+                    buildLog = $buildLog
+                } | ConvertTo-Json -Depth 10
+
+                Write-Host ""
+                Write-Host "===== SENDING LOG TO AI ANALYZER ====="
+                Write-Host "URL: http://localhost:8200/api/analyze"
+                Write-Host ""
+
+                try {
+
+                    $response = Invoke-RestMethod `
+                        -Uri "http://localhost:8200/api/analyze" `
+                        -Method POST `
+                        -ContentType "application/json" `
+                        -Body $requestBody
+
+                    Write-Host ""
+                    Write-Host "===== AI ANALYSIS RESULT ====="
+                    $response | ConvertTo-Json -Depth 10
+                    Write-Host "================================"
+                    Write-Host ""
+
+                }
+                catch {
+
+                    Write-Host ""
+                    Write-Host "===== AI ANALYZER ERROR ====="
+                    Write-Host $_.Exception.Message
+                    Write-Host "=============================="
+                    Write-Host ""
+
+                    exit 1
+                }
             '''
         }
 
