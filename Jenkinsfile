@@ -156,12 +156,51 @@ pipeline {
     }
 
     post {
+
         success {
             echo 'NexPay CI: Required builds/tests and SonarCloud analysis completed successfully.'
         }
 
         failure {
-            echo 'NexPay CI: One or more builds/tests or SonarCloud analysis failed. '
+            echo 'NexPay CI: One or more builds/tests or SonarCloud analysis failed.'
+
+            script {
+
+                // Get Jenkins console log
+                def buildLog = currentBuild.rawBuild
+                        .getLog(2000)
+                        .join('\n')
+
+                // Save the Jenkins log to a file
+                writeFile(
+                    file: 'ai-build-log.txt',
+                    text: buildLog
+                )
+
+                echo 'Jenkins build log captured for AI analysis.'
+
+                // Send Jenkins log to AI Analyzer
+                powershell '''
+                    $buildLog = Get-Content "ai-build-log.txt" -Raw
+
+                    $body = @{
+                        serviceName = "NexPay"
+                        buildNumber = [int]$env:BUILD_NUMBER
+                        buildLog = $buildLog
+                    } | ConvertTo-Json -Compress
+
+                    Write-Host "Sending failed Jenkins build to AI Analyzer..."
+
+                    $response = Invoke-RestMethod `
+                        -Uri "http://localhost:8200/api/analyze" `
+                        -Method Post `
+                        -ContentType "application/json" `
+                        -Body $body
+
+                    Write-Host "AI Analysis Result:"
+                    $response | ConvertTo-Json
+                '''
+            }
         }
 
         always {
