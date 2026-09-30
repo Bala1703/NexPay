@@ -141,6 +141,20 @@ pipeline {
             }
         }
 
+        /*
+         * TEMPORARY TEST STAGE
+         *
+         * This intentionally fails the pipeline so that
+         * post -> failure can be tested.
+         *
+         * Remove this stage after log-file testing is complete.
+         */
+        stage('Test AI Failure') {
+            steps {
+                bat 'exit /b 1'
+            }
+        }
+
         stage('SonarCloud Analysis') {
             steps {
                 withSonarQubeEnv('SonarCloud') {
@@ -162,59 +176,40 @@ pipeline {
         }
 
         failure {
-    echo 'NexPay CI: One or more builds/tests or SonarCloud analysis failed.'
+            echo 'NexPay CI: Build failed. Capturing Jenkins console log.'
 
-    script {
+            script {
 
-        // Get Jenkins console log
-        def buildLog = currentBuild.rawBuild
-                .getLog(2000)
-                .join('\n')
+                // Get up to 2,000 lines from the Jenkins console log
+                def buildLog = currentBuild.rawBuild
+                        .getLog(2000)
+                        .join('\n')
 
-        // Save the Jenkins log to the desired location
-        powershell '''
-            $logDirectory = "D:\\AI Powered CICD Optimization\\NexPay\\logs"
-            $logFile = "$logDirectory\\ai-build-log.txt"
+                // Desired log directory
+                def logDirectory =
+                        'D:\\AI Powered CICD Optimization\\NexPay\\logs'
 
-            New-Item -ItemType Directory -Force -Path $logDirectory | Out-Null
+                // Create the directory if it does not exist
+                bat """
+                    if not exist "${logDirectory}" (
+                        mkdir "${logDirectory}"
+                    )
+                """
 
-            $buildLog = @'
-''' + buildLog + '''
-'@
+                // Write Jenkins console log to the desired location
+                writeFile(
+                    file: 'ai-build-log.txt',
+                    text: buildLog
+                )
 
-            Set-Content -Path $logFile -Value $buildLog
+                bat """
+                    copy /Y "ai-build-log.txt" "${logDirectory}\\ai-build-log.txt"
+                """
 
-            Write-Host "Jenkins build log saved to:"
-            Write-Host $logFile
-        '''
-
-        echo 'Jenkins build log captured for AI analysis.'
-
-        // Send Jenkins log to AI Analyzer
-        powershell '''
-            $logFile = "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
-
-            $buildLog = Get-Content $logFile -Raw
-
-            $body = @{
-                serviceName = "NexPay"
-                buildNumber = [int]$env:BUILD_NUMBER
-                buildLog = $buildLog
-            } | ConvertTo-Json -Compress
-
-            Write-Host "Sending failed Jenkins build to AI Analyzer..."
-
-            $response = Invoke-RestMethod `
-                -Uri "http://localhost:8200/api/analyze" `
-                -Method Post `
-                -ContentType "application/json" `
-                -Body $body
-
-            Write-Host "AI Analysis Result:"
-            $response | ConvertTo-Json
-        '''
-    }
-}
+                echo 'Jenkins console log saved successfully.'
+                echo "Log location: ${logDirectory}\\ai-build-log.txt"
+            }
+        }
 
         always {
             echo 'NexPay CI pipeline completed.'
