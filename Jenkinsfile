@@ -6,9 +6,7 @@ pipeline {
         stage('Prepare AI Log') {
             steps {
                 bat '''
-                    if exist "%WORKSPACE%\\ai-build-log.txt" (
-                        del /F /Q "%WORKSPACE%\\ai-build-log.txt"
-                    )
+                    if exist "%WORKSPACE%\\ai-build-log.txt" del /f /q "%WORKSPACE%\\ai-build-log.txt"
                 '''
             }
         }
@@ -16,7 +14,6 @@ pipeline {
         stage('Detect Changes') {
             steps {
                 script {
-
                     def changedFiles = bat(
                         script: 'git diff --name-only HEAD~1 HEAD',
                         returnStdout: true
@@ -24,8 +21,6 @@ pipeline {
 
                     echo "Changed files:"
                     echo changedFiles
-
-                    env.CHANGED_FILES = changedFiles
 
                     env.BUILD_COMMON = 'false'
                     env.BUILD_USER = 'false'
@@ -65,12 +60,12 @@ pipeline {
                         env.BUILD_AI_ANALYZER = 'true'
                     }
 
-                    echo "BUILD_COMMON = ${env.BUILD_COMMON}"
-                    echo "BUILD_USER = ${env.BUILD_USER}"
-                    echo "BUILD_CONNECTION = ${env.BUILD_CONNECTION}"
-                    echo "BUILD_BANK = ${env.BUILD_BANK}"
+                    echo "BUILD_COMMON      = ${env.BUILD_COMMON}"
+                    echo "BUILD_USER        = ${env.BUILD_USER}"
+                    echo "BUILD_CONNECTION  = ${env.BUILD_CONNECTION}"
+                    echo "BUILD_BANK        = ${env.BUILD_BANK}"
                     echo "BUILD_TRANSACTION = ${env.BUILD_TRANSACTION}"
-                    echo "BUILD_PAYMENT = ${env.BUILD_PAYMENT}"
+                    echo "BUILD_PAYMENT     = ${env.BUILD_PAYMENT}"
                     echo "BUILD_AI_ANALYZER = ${env.BUILD_AI_ANALYZER}"
                 }
             }
@@ -85,13 +80,13 @@ pipeline {
             steps {
                 dir('common') {
                     tee("${env.WORKSPACE}\\ai-build-log.txt") {
-                        bat 'mvnw.cmd clean install -DskipTests'
+                        bat 'mvnw.cmd clean test'
                     }
                 }
             }
         }
 
-        stage('Build User') {
+        stage('Build User Service') {
             when {
                 expression {
                     env.BUILD_USER == 'true'
@@ -106,7 +101,7 @@ pipeline {
             }
         }
 
-        stage('Build Connection') {
+        stage('Build Connection Service') {
             when {
                 expression {
                     env.BUILD_CONNECTION == 'true'
@@ -121,7 +116,7 @@ pipeline {
             }
         }
 
-        stage('Build Bank') {
+        stage('Build Bank Account Service') {
             when {
                 expression {
                     env.BUILD_BANK == 'true'
@@ -136,7 +131,7 @@ pipeline {
             }
         }
 
-        stage('Build Transaction') {
+        stage('Build Transaction Service') {
             when {
                 expression {
                     env.BUILD_TRANSACTION == 'true'
@@ -151,7 +146,7 @@ pipeline {
             }
         }
 
-        stage('Build Payment') {
+        stage('Build Payment Service') {
             when {
                 expression {
                     env.BUILD_PAYMENT == 'true'
@@ -166,7 +161,7 @@ pipeline {
             }
         }
 
-        stage('Build AI Analyzer') {
+        stage('Build AI CICD Analyzer') {
             when {
                 expression {
                     env.BUILD_AI_ANALYZER == 'true'
@@ -184,60 +179,66 @@ pipeline {
         stage('SonarCloud Analysis') {
             steps {
                 tee("${env.WORKSPACE}\\ai-build-log.txt") {
-                    withSonarQubeEnv('SonarCloud') {
-                        bat '''
-                            common\\mvnw.cmd -f pom.xml verify ^
-                            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
-                            -Dsonar.organization=bala1703 ^
-                            -Dsonar.projectKey=Bala1703_NexPay
-                        '''
-                    }
+                    bat '''
+                        common\\mvnw.cmd verify sonar:sonar ^
+                        -Dsonar.organization=Bala1703 ^
+                        -Dsonar.projectKey=Bala1703_NexPay ^
+                        -Dsonar.host.url=https://sonarcloud.io ^
+                        -Dsonar.token=%SONAR_TOKEN%
+                    '''
                 }
             }
         }
     }
 
     post {
-
         failure {
-
-            echo 'NexPay CI: Build failed.'
+            echo '================================================='
+            echo 'BUILD FAILED'
+            echo '================================================='
 
             bat '''
-                echo.
                 echo ===== AI BUILD LOG =====
-                echo.
 
                 if exist "%WORKSPACE%\\ai-build-log.txt" (
                     type "%WORKSPACE%\\ai-build-log.txt"
                 ) else (
-                    echo ERROR: ai-build-log.txt was not created.
-                    exit /b 1
+                    echo AI build log file NOT FOUND
                 )
+
+                echo.
+                echo ===== COPYING AI LOG =====
 
                 if not exist "D:\\AI Powered CICD Optimization\\NexPay\\logs" (
                     mkdir "D:\\AI Powered CICD Optimization\\NexPay\\logs"
                 )
 
-                copy /Y "%WORKSPACE%\\ai-build-log.txt" "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
-
-                echo.
-                echo AI build log copied to:
-                echo D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt
+                if exist "%WORKSPACE%\\ai-build-log.txt" (
+                    copy /Y "%WORKSPACE%\\ai-build-log.txt" "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
+                )
             '''
 
+            echo 'AI build log copied to: D:\AI Powered CICD Optimization\NexPay\logs\ai-build-log.txt'
             echo 'Sending build log to AI Analyzer...'
 
             powershell '''
+                Write-Host "STEP 1 - PowerShell started"
+
                 $logFile = "$env:WORKSPACE\\ai-build-log.txt"
-                $aiAnalyzerUrl = "http://localhost:8200/api/analyze"
+
+                Write-Host "STEP 2 - Log file: $logFile"
 
                 if (-not (Test-Path $logFile)) {
-                    Write-Error "AI build log not found: $logFile"
+                    Write-Host "STEP 3 - LOG FILE NOT FOUND"
                     exit 1
                 }
 
+                Write-Host "STEP 3 - Log file exists"
+
                 $buildLog = Get-Content -Path $logFile -Raw
+
+                Write-Host "STEP 4 - Log file read successfully"
+                Write-Host "Log size: $($buildLog.Length) characters"
 
                 $requestBody = @{
                     serviceName = "NexPay"
@@ -245,48 +246,26 @@ pipeline {
                     buildLog = $buildLog
                 } | ConvertTo-Json -Depth 10
 
-                Write-Host ""
-                Write-Host "===== SENDING LOG TO AI ANALYZER ====="
-                Write-Host "URL: $aiAnalyzerUrl"
-                Write-Host "AI processing timeout: NONE"
-                Write-Host ""
+                Write-Host "STEP 5 - JSON created"
+                Write-Host "JSON size: $($requestBody.Length) characters"
 
-                try {
+                Write-Host "STEP 6 - Calling AI Analyzer..."
+                Write-Host "URL: http://localhost:8200/api/analyze"
 
-                    $response = Invoke-RestMethod `
-                        -Uri $aiAnalyzerUrl `
-                        -Method POST `
-                        -ContentType "application/json" `
-                        -Body $requestBody
+                $response = Invoke-RestMethod `
+                    -Uri "http://localhost:8200/api/analyze" `
+                    -Method POST `
+                    -ContentType "application/json" `
+                    -Body $requestBody
 
-                    Write-Host ""
-                    Write-Host "===== AI ANALYSIS RESULT ====="
-                    $response | ConvertTo-Json -Depth 10
-                    Write-Host "================================"
-                    Write-Host ""
+                Write-Host "STEP 7 - AI Analyzer responded"
 
-                }
-                catch {
+                Write-Host "===== AI ANALYSIS RESULT ====="
 
-                    Write-Host ""
-                    Write-Host "===== AI ANALYZER ERROR ====="
-                    Write-Host $_.Exception.Message
-                    Write-Host "=============================="
-                    Write-Host ""
+                $response | ConvertTo-Json -Depth 10
 
-                    exit 1
-                }
+                Write-Host "===== AI ANALYSIS COMPLETED ====="
             '''
-        }
-
-        success {
-
-            echo 'NexPay CI: Required builds/tests and SonarCloud analysis completed successfully.'
-        }
-
-        always {
-
-            echo 'NexPay CI pipeline completed.'
         }
     }
 }
