@@ -60,13 +60,13 @@ pipeline {
                         env.BUILD_AI_ANALYZER = 'true'
                     }
 
-                    echo "BUILD_COMMON      = ${env.BUILD_COMMON}"
-                    echo "BUILD_USER        = ${env.BUILD_USER}"
-                    echo "BUILD_CONNECTION  = ${env.BUILD_CONNECTION}"
-                    echo "BUILD_BANK        = ${env.BUILD_BANK}"
-                    echo "BUILD_TRANSACTION = ${env.BUILD_TRANSACTION}"
-                    echo "BUILD_PAYMENT     = ${env.BUILD_PAYMENT}"
-                    echo "BUILD_AI_ANALYZER = ${env.BUILD_AI_ANALYZER}"
+                    echo "BUILD_COMMON       = ${env.BUILD_COMMON}"
+                    echo "BUILD_USER         = ${env.BUILD_USER}"
+                    echo "BUILD_CONNECTION   = ${env.BUILD_CONNECTION}"
+                    echo "BUILD_BANK         = ${env.BUILD_BANK}"
+                    echo "BUILD_TRANSACTION  = ${env.BUILD_TRANSACTION}"
+                    echo "BUILD_PAYMENT      = ${env.BUILD_PAYMENT}"
+                    echo "BUILD_AI_ANALYZER  = ${env.BUILD_AI_ANALYZER}"
                 }
             }
         }
@@ -193,7 +193,6 @@ pipeline {
 
     post {
         failure {
-
             echo '================================================='
             echo 'BUILD FAILED'
             echo '================================================='
@@ -241,43 +240,18 @@ pipeline {
                 Write-Host "STEP 4 - Log file read successfully"
                 Write-Host "Log size: $($buildLog.Length) characters"
 
-                $requestBody = @{
-                    serviceName = "NexPay"
-                    buildNumber = [int]$env:BUILD_NUMBER
+                Write-Host "STEP 5A - Testing JSON conversion"
+
+                $testObject = @{
                     buildLog = $buildLog
-                } | ConvertTo-Json -Depth 10
+                }
 
-                Write-Host "STEP 5A - Starting JSON conversion"
+                Write-Host "STEP 5B - Object created"
 
-			$requestBody = @{
-   		        serviceName = "NexPay"
-    			buildNumber = [int]$env:BUILD_NUMBER
-	                buildLog = $buildLog
-		   } | ConvertTo-Json -Compress
+                $requestBody = $testObject | ConvertTo-Json -Compress
 
-		Write-Host "STEP 5B - JSON conversion completed"
-		Write-Host "JSON size: $($requestBody.Length) characters"
-
-                Write-Host "STEP 6 - Calling AI Analyzer..."
-                Write-Host "URL: http://localhost:8200/api/analyze"
-
-                $response = Invoke-RestMethod `
-                    -Uri "http://localhost:8200/api/analyze" `
-                    -Method POST `
-                    -ContentType "application/json" `
-                    -Body $requestBody
-
-                Write-Host "STEP 7 - AI Analyzer responded"
-
-                Write-Host "==============================================="
-                Write-Host "AI ANALYSIS RESULT"
-                Write-Host "==============================================="
-
-                $response | ConvertTo-Json -Depth 10
-
-                Write-Host "==============================================="
-                Write-Host "AI ANALYSIS COMPLETED"
-                Write-Host "==============================================="
+                Write-Host "STEP 5C - JSON conversion completed"
+                Write-Host "JSON size: $($requestBody.Length) characters"
             '''
         }
     }
