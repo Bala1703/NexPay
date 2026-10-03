@@ -251,7 +251,11 @@ pipeline {
 
                 Write-Host "STEP 6 - Request object created"
 
-                $requestBody = [System.Text.Json.JsonSerializer]::Serialize($requestObject)
+                Add-Type -AssemblyName System.Web
+
+                $serializer = New-Object System.Web.Script.Serialization.JavaScriptSerializer
+
+                $requestBody = $serializer.Serialize($requestObject)
 
                 Write-Host "STEP 7 - JSON serialization completed"
                 Write-Host "JSON size: $($requestBody.Length) characters"
