@@ -272,7 +272,7 @@ pipeline {
                 Write-Host "STEP 9 - AI Analyzer responded"
 
                 Write-Host "==============================================="
-                Write-Host "AI ANALYSIS RESULT"
+                Write-Host "AI ANALYSIS RESULT "
                 Write-Host "==============================================="
 
                 $response | ConvertTo-Json -Depth 10
