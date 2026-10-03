@@ -193,6 +193,7 @@ pipeline {
 
     post {
         failure {
+
             echo '================================================='
             echo 'BUILD FAILED'
             echo '================================================='
@@ -240,18 +241,14 @@ pipeline {
                 Write-Host "STEP 4 - Log file read successfully"
                 Write-Host "Log size: $($buildLog.Length) characters"
 
-                Write-Host "STEP 5A - Testing JSON conversion"
+                Write-Host "STEP 5A - PowerShell variable test"
 
-                $testObject = @{
-                    buildLog = $buildLog
-                }
+                $test = "HELLO"
 
-                Write-Host "STEP 5B - Object created"
+                Write-Host "STEP 5B - Variable created"
+                Write-Host "Test value: $test"
 
-                $requestBody = $testObject | ConvertTo-Json -Compress
-
-                Write-Host "STEP 5C - JSON conversion completed"
-                Write-Host "JSON size: $($requestBody.Length) characters"
+                Write-Host "STEP 5C - PowerShell test completed"
             '''
         }
     }
