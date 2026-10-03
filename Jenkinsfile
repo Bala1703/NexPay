@@ -241,14 +241,41 @@ pipeline {
                 Write-Host "STEP 4 - Log file read successfully"
                 Write-Host "Log size: $($buildLog.Length) characters"
 
-                Write-Host "STEP 5A - PowerShell variable test"
+                Write-Host "STEP 5 - Creating request object"
 
-                $test = "HELLO"
+                $requestObject = @{
+                    serviceName = "NexPay"
+                    buildNumber = [int]$env:BUILD_NUMBER
+                    buildLog = $buildLog
+                }
 
-                Write-Host "STEP 5B - Variable created"
-                Write-Host "Test value: $test"
+                Write-Host "STEP 6 - Request object created"
 
-                Write-Host "STEP 5C - PowerShell test completed"
+                $requestBody = [System.Text.Json.JsonSerializer]::Serialize($requestObject)
+
+                Write-Host "STEP 7 - JSON serialization completed"
+                Write-Host "JSON size: $($requestBody.Length) characters"
+
+                Write-Host "STEP 8 - Calling AI Analyzer..."
+                Write-Host "URL: http://localhost:8200/api/analyze"
+
+                $response = Invoke-RestMethod `
+                    -Uri "http://localhost:8200/api/analyze" `
+                    -Method POST `
+                    -ContentType "application/json" `
+                    -Body $requestBody
+
+                Write-Host "STEP 9 - AI Analyzer responded"
+
+                Write-Host "==============================================="
+                Write-Host "AI ANALYSIS RESULT"
+                Write-Host "==============================================="
+
+                $response | ConvertTo-Json -Depth 10
+
+                Write-Host "==============================================="
+                Write-Host "AI ANALYSIS COMPLETED"
+                Write-Host "==============================================="
             '''
         }
     }
