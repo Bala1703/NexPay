@@ -24,9 +24,39 @@ public class AiAnalysisController {
     @PostMapping
     public AiAnalysisResponse analyze(@RequestBody BuildLogRequest request) {
 
-        String relevantLogs =
-                jenkinsLogProcessor.extractRelevantLogs(request.getBuildLog());
+        System.out.println();
+        System.out.println("================================================");
+        System.out.println("       AI CI/CD ANALYZER - LOG RECEIVED");
+        System.out.println("================================================");
+        System.out.println("Service Name  : " + request.getServiceName());
+        System.out.println("Build Number  : " + request.getBuildNumber());
 
-        return aiAnalysisService.analyze(relevantLogs);
+        String buildLog = request.getBuildLog();
+
+        System.out.println("Build Log Size: "
+                + (buildLog != null ? buildLog.length() : 0)
+                + " characters");
+
+        System.out.println("================================================");
+
+        String relevantLogs =
+                jenkinsLogProcessor.extractRelevantLogs(buildLog);
+
+        System.out.println("Relevant Log Size: "
+                + (relevantLogs != null ? relevantLogs.length() : 0)
+                + " characters");
+
+        System.out.println("Sending relevant logs to AI analysis...");
+        System.out.println("================================================");
+
+        AiAnalysisResponse response =
+                aiAnalysisService.analyze(relevantLogs);
+
+        System.out.println("AI analysis completed.");
+        System.out.println("================================================");
+        System.out.println();
+
+        return response;
     }
 }
+
