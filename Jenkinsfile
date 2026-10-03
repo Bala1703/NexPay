@@ -247,8 +247,16 @@ pipeline {
                     buildLog = $buildLog
                 } | ConvertTo-Json -Depth 10
 
-                Write-Host "STEP 5 - JSON created"
-                Write-Host "JSON size: $($requestBody.Length) characters"
+                Write-Host "STEP 5A - Starting JSON conversion"
+
+			$requestBody = @{
+   		        serviceName = "NexPay"
+    			buildNumber = [int]$env:BUILD_NUMBER
+	                buildLog = $buildLog
+		   } | ConvertTo-Json -Compress
+
+		Write-Host "STEP 5B - JSON conversion completed"
+		Write-Host "JSON size: $($requestBody.Length) characters"
 
                 Write-Host "STEP 6 - Calling AI Analyzer..."
                 Write-Host "URL: http://localhost:8200/api/analyze"
