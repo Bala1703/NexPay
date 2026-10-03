@@ -193,6 +193,7 @@ pipeline {
 
     post {
         failure {
+
             echo '================================================='
             echo 'BUILD FAILED'
             echo '================================================='
@@ -218,7 +219,7 @@ pipeline {
                 )
             '''
 
-            echo 'AI build log copied to: D:\AI Powered CICD Optimization\NexPay\logs\ai-build-log.txt'
+            echo 'AI build log copied to: D:/AI Powered CICD Optimization/NexPay/logs/ai-build-log.txt'
             echo 'Sending build log to AI Analyzer...'
 
             powershell '''
@@ -260,11 +261,15 @@ pipeline {
 
                 Write-Host "STEP 7 - AI Analyzer responded"
 
-                Write-Host "===== AI ANALYSIS RESULT ====="
+                Write-Host "==============================================="
+                Write-Host "AI ANALYSIS RESULT"
+                Write-Host "==============================================="
 
                 $response | ConvertTo-Json -Depth 10
 
-                Write-Host "===== AI ANALYSIS COMPLETED ====="
+                Write-Host "==============================================="
+                Write-Host "AI ANALYSIS COMPLETED"
+                Write-Host "==============================================="
             '''
         }
     }
