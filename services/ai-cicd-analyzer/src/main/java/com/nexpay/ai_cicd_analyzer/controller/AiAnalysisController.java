@@ -25,7 +25,7 @@ public class AiAnalysisController {
                 + " characters");
 
         System.out.println("================================================");
-        System.out.println("       REQUEST RECEIVED SUCCESSFULLY");
+        System.out.println("       REQUEST RECEIVED SUCCESSFULLY ");
         System.out.println("================================================");
         System.out.println();
 
