@@ -186,7 +186,7 @@ pipeline {
                 tee("${env.WORKSPACE}\\ai-build-log.txt") {
                     bat '''
                         common\\mvnw.cmd verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
-                        -Dsonar.organization=Bala1703 ^
+                        -Dsonar.organization=bala1703 ^
                         -Dsonar.projectKey=Bala1703_NexPay ^
                         -Dsonar.host.url=https://sonarcloud.io ^
                         -Dsonar.token=%SONAR_TOKEN%
