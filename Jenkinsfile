@@ -10,7 +10,7 @@ pipeline {
         stage('Prepare AI Log') {
             steps {
                 bat '''
-                    if exist "%WORKSPACE%\\ai-build-log.txt" del /f /q "%WORKSPACE%\\ai-build-log.txt"
+                    if exist "%WORKSPACE%\\ai-build-log.txt" del /f /q "%WORKSPACE%\\ai-build-log.txt "
                 '''
             }
         }
