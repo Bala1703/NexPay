@@ -18,6 +18,7 @@ pipeline {
         stage('Detect Changes') {
             steps {
                 script {
+
                     def changedFiles = bat(
                         script: 'git diff --name-only HEAD~1 HEAD',
                         returnStdout: true
@@ -181,89 +182,96 @@ pipeline {
         }
 
         stage('SonarCloud Analysis') {
-    steps {
-        tee("${env.WORKSPACE}\\ai-build-log.txt") {
-            bat '''
-                common\\mvnw.cmd verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
-                -Dsonar.organization=Bala1703 ^
-                -Dsonar.projectKey=Bala1703_NexPay ^
-                -Dsonar.host.url=https://sonarcloud.io ^
-                -Dsonar.token=%SONAR_TOKEN%
-            '''
+            steps {
+                tee("${env.WORKSPACE}\\ai-build-log.txt") {
+                    bat '''
+                        common\\mvnw.cmd verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
+                        -Dsonar.organization=Bala1703 ^
+                        -Dsonar.projectKey=Bala1703_NexPay ^
+                        -Dsonar.host.url=https://sonarcloud.io ^
+                        -Dsonar.token=%SONAR_TOKEN%
+                    '''
+                }
+            }
         }
-    }
-}
     }
 
     post {
+
         failure {
-
-            echo '================================================='
-            echo 'BUILD FAILED'
-            echo '================================================='
-
-            bat '''
-                echo ===== AI BUILD LOG =====
-
-                if exist "%WORKSPACE%\\ai-build-log.txt" (
-                    type "%WORKSPACE%\\ai-build-log.txt"
-                ) else (
-                    echo AI build log file NOT FOUND
-                )
-
-                echo.
-                echo ===== COPYING AI LOG =====
-
-                if not exist "D:\\AI Powered CICD Optimization\\NexPay\\logs" (
-                    mkdir "D:\\AI Powered CICD Optimization\\NexPay\\logs"
-                )
-
-                if exist "%WORKSPACE%\\ai-build-log.txt" (
-                    copy /Y "%WORKSPACE%\\ai-build-log.txt" "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
-                )
-            '''
-
-            echo 'AI build log copied to: D:/AI Powered CICD Optimization/NexPay/logs/ai-build-log.txt'
-            echo 'Sending build log to AI Analyzer...'
 
             script {
 
-                def aiLogFile = "${env.WORKSPACE}\\ai-build-log.txt"
+                node {
 
-                if (!fileExists(aiLogFile)) {
-                    error "AI build log file not found: ${aiLogFile}"
-                }
+                    echo '================================================='
+                    echo 'BUILD FAILED'
+                    echo '================================================='
 
-                echo "AI log file found: ${aiLogFile}"
+                    echo 'Checking AI build log...'
 
-                def response = httpRequest(
-                    httpMode: 'POST',
-                    url: 'http://localhost:8200/api/analyze',
-                    contentType: 'TEXT_PLAIN',
-                    acceptType: 'APPLICATION_JSON',
-                    customHeaders: [
-                        [
-                            name: 'X-Service-Name',
-                            value: 'NexPay'
+                    bat '''
+                        echo ===== AI BUILD LOG =====
+
+                        if exist "%WORKSPACE%\\ai-build-log.txt" (
+                            type "%WORKSPACE%\\ai-build-log.txt"
+                        ) else (
+                            echo AI build log file NOT FOUND
+                        )
+
+                        echo.
+                        echo ===== COPYING AI LOG =====
+
+                        if not exist "D:\\AI Powered CICD Optimization\\NexPay\\logs" (
+                            mkdir "D:\\AI Powered CICD Optimization\\NexPay\\logs"
+                        )
+
+                        if exist "%WORKSPACE%\\ai-build-log.txt" (
+                            copy /Y "%WORKSPACE%\\ai-build-log.txt" "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
+                        )
+                    '''
+
+                    echo 'AI build log copied to: D:/AI Powered CICD Optimization/NexPay/logs/ai-build-log.txt'
+
+                    echo 'Sending build log to AI Analyzer...'
+
+                    def aiLogFile = "${env.WORKSPACE}\\ai-build-log.txt"
+
+                    if (!fileExists(aiLogFile)) {
+                        error "AI build log file not found: ${aiLogFile}"
+                    }
+
+                    echo "AI log file found: ${aiLogFile}"
+
+                    def response = httpRequest(
+                        httpMode: 'POST',
+                        url: 'http://localhost:8200/api/analyze',
+                        contentType: 'TEXT_PLAIN',
+                        acceptType: 'APPLICATION_JSON',
+                        customHeaders: [
+                            [
+                                name: 'X-Service-Name',
+                                value: 'NexPay'
+                            ],
+                            [
+                                name: 'X-Build-Number',
+                                value: "${env.BUILD_NUMBER}"
+                            ]
                         ],
-                        [
-                            name: 'X-Build-Number',
-                            value: "${env.BUILD_NUMBER}"
-                        ]
-                    ],
-                    uploadFile: aiLogFile,
-                    wrapAsMultipart: false,
-                    timeout: 0,
-                    validResponseCodes: '200'
-                )
+                        uploadFile: aiLogFile,
+                        wrapAsMultipart: false,
+                        timeout: 0,
+                        validResponseCodes: '200'
+                    )
 
-                echo '==============================================='
-                echo 'AI ANALYSIS RESULT '
-                echo '==============================================='
-                echo response.content
-                echo '==============================================='
-                echo 'AI ANALYSIS COMPLETED'
-                echo '==============================================='
+                    echo '==============================================='
+                    echo 'AI ANALYSIS RESULT'
+                    echo '==============================================='
+                    echo response.content
+                    echo '==============================================='
+                    echo 'AI ANALYSIS COMPLETED'
+                    echo '==============================================='
+                }
             }
         }
     }
