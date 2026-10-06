@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SONAR_TOKEN = credentials('nexpay-jenkins')
+    }
+
     stages {
 
         stage('Prepare AI Log') {
