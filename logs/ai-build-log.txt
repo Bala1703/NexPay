@@ -1,5 +1,73 @@
 
-C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline@3>common\mvnw.cmd verify sonar:sonar                         -Dsonar.organization=Bala1703                         -Dsonar.projectKey=Bala1703_NexPay                         -Dsonar.host.url=https://sonarcloud.io                         -Dsonar.token= 
+C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline\services\ai-cicd-analyzer>mvnw.cmd clean test 
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.nexpay:ai-cicd-analyzer >---------------------
+[INFO] Building ai-cicd-analyzer 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ ai-cicd-analyzer ---
+[INFO] Deleting C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline\services\ai-cicd-analyzer\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ ai-cicd-analyzer ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ ai-cicd-analyzer ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 6 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ ai-cicd-analyzer ---
+[INFO] skip non existing resourceDirectory C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline\services\ai-cicd-analyzer\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ ai-cicd-analyzer ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ ai-cicd-analyzer ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests
+10:59:56.941 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests]: AiCicdAnalyzerApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+10:59:57.058 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplication for test class com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.0)
+
+2026-10-06T10:59:57.661+05:30  INFO 24540 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : Starting AiCicdAnalyzerApplicationTests using Java 21.0.12.1 with PID 24540 (started by HP-PC$ in C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline\services\ai-cicd-analyzer)
+2026-10-06T10:59:57.662+05:30  INFO 24540 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2026-10-06T10:59:59.693+05:30  INFO 24540 --- [ai-cicd-analyzer] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-06T10:59:59.737+05:30  INFO 24540 --- [ai-cicd-analyzer] [           main] c.n.a.AiCicdAnalyzerApplicationTests     : Started AiCicdAnalyzerApplicationTests in 2.399 seconds (process running for 3.855)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Windows\system32\config\systemprofile\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.955 s -- in com.nexpay.ai_cicd_analyzer.AiCicdAnalyzerApplicationTests
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  9.385 s
+[INFO] Finished at: 2026-10-06T11:00:00+05:30
+[INFO] ------------------------------------------------------------------------
+
+C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline>common\mvnw.cmd verify sonar:sonar                         -Dsonar.organization=Bala1703                         -Dsonar.projectKey=Bala1703_NexPay                         -Dsonar.host.url=https://sonarcloud.io                         -Dsonar.token= 
 [INFO] Scanning for projects...
 [WARNING] 
 [WARNING] Some problems were encountered while building the effective model for com.nexpay:user-service:jar:0.0.1-SNAPSHOT
@@ -20,26 +88,26 @@ C:\ProgramData\Jenkins\.jenkins\workspace\NexPay-CI Pipeline@3>common\mvnw.cmd v
 [INFO] nexpay-transaction-service                                         [jar]
 [INFO] user-service                                                       [jar]
 [INFO] nexpay                                                             [pom]
+Downloading from central: https://repo.maven.apache.org/maven2/org/cyclonedx/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/io/github/git-commit-id/maven-metadata.xml
 Downloading from central: https://repo.maven.apache.org/maven2/org/flywaydb/maven-metadata.xml
 Downloading from central: https://repo.maven.apache.org/maven2/org/jooq/maven-metadata.xml
-Downloading from central: https://repo.maven.apache.org/maven2/io/github/git-commit-id/maven-metadata.xml
-Downloading from central: https://repo.maven.apache.org/maven2/org/cyclonedx/maven-metadata.xml
-Progress (1): 234 BProgress (2): 234 B | 243 B                           Downloaded from central: https://repo.maven.apache.org/maven2/org/cyclonedx/maven-metadata.xml (243 B at 235 B/s)
-Downloaded from central: https://repo.maven.apache.org/maven2/org/flywaydb/maven-metadata.xml (234 B at 226 B/s)
+Progress (1): 255 B                   Downloaded from central: https://repo.maven.apache.org/maven2/io/github/git-commit-id/maven-metadata.xml (255 B at 484 B/s)
 Downloading from central: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/maven-metadata.xml
+Progress (1): 375 B                   Downloaded from central: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/maven-metadata.xml (375 B at 7.7 kB/s)
 Downloading from central: https://repo.maven.apache.org/maven2/org/liquibase/maven-metadata.xml
-Progress (1): 394 BProgress (2): 394 B | 375 B                           Downloaded from central: https://repo.maven.apache.org/maven2/org/liquibase/maven-metadata.xml (394 B at 2.8 kB/s)
+Progress (1): 394 B                   Downloaded from central: https://repo.maven.apache.org/maven2/org/liquibase/maven-metadata.xml (394 B at 11 kB/s)
 Downloading from central: https://repo.maven.apache.org/maven2/org/graalvm/buildtools/maven-metadata.xml
-Downloaded from central: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/maven-metadata.xml (375 B at 2.6 kB/s)
+Progress (1): 398 B                   Downloaded from central: https://repo.maven.apache.org/maven2/org/jooq/maven-metadata.xml (398 B at 624 B/s)
 Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/maven-metadata.xml
-Progress (1): 255 BProgress (2): 255 B | 398 B                           Downloaded from central: https://repo.maven.apache.org/maven2/org/jooq/maven-metadata.xml (398 B at 384 B/s)
+Progress (1): 243 B                   Downloaded from central: https://repo.maven.apache.org/maven2/org/cyclonedx/maven-metadata.xml (243 B at 378 B/s)
 Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml
-Downloaded from central: https://repo.maven.apache.org/maven2/io/github/git-commit-id/maven-metadata.xml (255 B at 246 B/s)
+Progress (1): 234 BProgress (2): 234 B | 242 B                           Downloaded from central: https://repo.maven.apache.org/maven2/org/flywaydb/maven-metadata.xml (234 B at 361 B/s)
 Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml
-Progress (1): 249 BProgress (2): 249 B | 242 B                           Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/boot/maven-metadata.xml (249 B at 3.7 kB/s)
-Downloaded from central: https://repo.maven.apache.org/maven2/org/graalvm/buildtools/maven-metadata.xml (242 B at 3.5 kB/s)
-Progress (1): 3.7 kBProgress (1): 7.4 kBProgress (1): 13 kB Progress (1): 19 kBProgress (1): 20 kB                   Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml (20 kB at 260 kB/s)
-Progress (1): 3.9 kBProgress (1): 7.7 kBProgress (1): 10 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml (10 kB at 114 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/graalvm/buildtools/maven-metadata.xml (242 B at 6.5 kB/s)
+Progress (1): 249 BProgress (2): 249 B | 3.9 kBProgress (2): 249 B | 7.7 kB                            Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/boot/maven-metadata.xml (249 B at 6.2 kB/s)
+Progress (1): 10 kB                   Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml (10 kB at 277 kB/s)
+Progress (1): 3.7 kBProgress (1): 7.4 kBProgress (1): 13 kB Progress (1): 19 kBProgress (1): 20 kB                   Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml (20 kB at 495 kB/s)
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary:
 [INFO] 
@@ -54,8 +122,8 @@ Progress (1): 3.9 kBProgress (1): 7.7 kBProgress (1): 10 kB                  
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  4.104 s
-[INFO] Finished at: 2026-10-03T23:46:51+05:30
+[INFO] Total time:  1.529 s
+[INFO] Finished at: 2026-10-06T11:00:05+05:30
 [INFO] ------------------------------------------------------------------------
 [ERROR] No plugin found for prefix 'sonar' in the current project and in the plugin groups [org.cyclonedx, org.flywaydb, io.github.git-commit-id, org.jooq, org.jetbrains.kotlin, org.liquibase, org.graalvm.buildtools, org.springframework.boot, org.apache.maven.plugins, org.codehaus.mojo] available from the repositories [local (C:\windows\system32\config\systemprofile\.m2\repository), central (https://repo.maven.apache.org/maven2)] -> [Help 1]
 [ERROR] 
