@@ -2,6 +2,7 @@ package com.nexpay.ai_cicd_analyzer.controller;
 
 import com.nexpay.ai_cicd_analyzer.model.AiAnalysisResponse;
 import com.nexpay.ai_cicd_analyzer.service.AiAnalysisService;
+import com.nexpay.ai_cicd_analyzer.service.JenkinsLogProcessor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +11,14 @@ import org.springframework.web.bind.annotation.*;
 public class AiAnalysisController {
 
     private final AiAnalysisService aiAnalysisService;
+    private final JenkinsLogProcessor jenkinsLogProcessor;
 
-    public AiAnalysisController(AiAnalysisService aiAnalysisService) {
+    public AiAnalysisController(
+            AiAnalysisService aiAnalysisService,
+            JenkinsLogProcessor jenkinsLogProcessor) {
+
         this.aiAnalysisService = aiAnalysisService;
+        this.jenkinsLogProcessor = jenkinsLogProcessor;
     }
 
     @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
@@ -32,6 +38,20 @@ public class AiAnalysisController {
                 + " characters");
         System.out.println("================================================");
 
-        return aiAnalysisService.analyze(buildLog);
+        // Extract only relevant failure/error information
+        String relevantLogs =
+                jenkinsLogProcessor.extractRelevantLogs(buildLog);
+
+        System.out.println();
+        System.out.println("================================================");
+        System.out.println("       RELEVANT LOGS EXTRACTED");
+        System.out.println("================================================");
+        System.out.println("Relevant Log Size: "
+                + relevantLogs.length()
+                + " characters");
+        System.out.println("================================================");
+
+        // Send only relevant logs to the AI service
+        return aiAnalysisService.analyze(relevantLogs);
     }
 }

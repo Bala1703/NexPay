@@ -31,7 +31,7 @@ public class AiAnalysisService {
                   "severity": "LOW, MEDIUM, HIGH, or CRITICAL"
                 }
 
-                Jenkins logs:
+                Jenkins relevant failure logs:
                 %s
                 """.formatted(relevantLogs);
 

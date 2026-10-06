@@ -222,65 +222,45 @@ pipeline {
             echo 'AI build log copied to: D:/AI Powered CICD Optimization/NexPay/logs/ai-build-log.txt'
             echo 'Sending build log to AI Analyzer...'
 
-            powershell '''
-                Write-Host "STEP 1 - PowerShell started"
+            script {
 
-                $logFile = "$env:WORKSPACE\\ai-build-log.txt"
+                def aiLogFile = "${env.WORKSPACE}\\ai-build-log.txt"
 
-                Write-Host "STEP 2 - Log file: $logFile"
-
-                if (-not (Test-Path $logFile)) {
-                    Write-Host "STEP 3 - LOG FILE NOT FOUND"
-                    exit 1
+                if (!fileExists(aiLogFile)) {
+                    error "AI build log file not found: ${aiLogFile}"
                 }
 
-                Write-Host "STEP 3 - Log file exists"
+                echo "AI log file found: ${aiLogFile}"
 
-                $buildLog = Get-Content -Path $logFile -Raw
+                def response = httpRequest(
+                    httpMode: 'POST',
+                    url: 'http://localhost:8200/api/analyze',
+                    contentType: 'TEXT_PLAIN',
+                    acceptType: 'APPLICATION_JSON',
+                    customHeaders: [
+                        [
+                            name: 'X-Service-Name',
+                            value: 'NexPay'
+                        ],
+                        [
+                            name: 'X-Build-Number',
+                            value: "${env.BUILD_NUMBER}"
+                        ]
+                    ],
+                    uploadFile: aiLogFile,
+                    wrapAsMultipart: false,
+                    timeout: 0,
+                    validResponseCodes: '200'
+                )
 
-                Write-Host "STEP 4 - Log file read successfully"
-                Write-Host "Log size: $($buildLog.Length) characters"
-
-                Write-Host "STEP 5 - Creating request object"
-
-                $requestObject = @{
-                    serviceName = "NexPay"
-                    buildNumber = [int]$env:BUILD_NUMBER
-                    buildLog = $buildLog
-                }
-
-                Write-Host "STEP 6 - Request object created"
-
-                Add-Type -AssemblyName System.Web
-
-                $serializer = New-Object System.Web.Script.Serialization.JavaScriptSerializer
-
-                $requestBody = $serializer.Serialize($requestObject)
-
-                Write-Host "STEP 7 - JSON serialization completed"
-                Write-Host "JSON size: $($requestBody.Length) characters"
-
-                Write-Host "STEP 8 - Calling AI Analyzer..."
-                Write-Host "URL: http://localhost:8200/api/analyze"
-
-                $response = Invoke-RestMethod `
-                    -Uri "http://localhost:8200/api/analyze" `
-                    -Method POST `
-                    -ContentType "application/json" `
-                    -Body $requestBody
-
-                Write-Host "STEP 9 - AI Analyzer responded"
-
-                Write-Host "==============================================="
-                Write-Host "AI ANALYSIS RESULT "
-                Write-Host "==============================================="
-
-                $response | ConvertTo-Json -Depth 10
-
-                Write-Host "==============================================="
-                Write-Host "AI ANALYSIS COMPLETED"
-                Write-Host "==============================================="
-            '''
+                echo '==============================================='
+                echo 'AI ANALYSIS RESULT'
+                echo '==============================================='
+                echo response.content
+                echo '==============================================='
+                echo 'AI ANALYSIS COMPLETED'
+                echo '==============================================='
+            }
         }
     }
 }

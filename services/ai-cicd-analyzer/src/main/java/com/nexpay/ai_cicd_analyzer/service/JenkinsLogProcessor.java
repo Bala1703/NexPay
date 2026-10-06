@@ -48,10 +48,14 @@ public class JenkinsLogProcessor {
             }
         }
 
-        String result = String.join(System.lineSeparator(), relevantLogs);
+        String result = String.join(
+                System.lineSeparator(),
+                relevantLogs
+        );
 
         // Prevent extremely large input from reaching the LLM
         if (result.length() > MAX_LOG_LENGTH) {
+
             result = result.substring(0, MAX_LOG_LENGTH)
                     + System.lineSeparator()
                     + "[LOG TRUNCATED]";
