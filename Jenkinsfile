@@ -302,7 +302,7 @@ pipeline {
                         )
 
                         echo '==============================================='
-                        echo 'AI ANALYSIS RESULT'
+                        echo 'AI ANALYSIS RESULT '
                         echo '==============================================='
                         echo response.content
                         echo '==============================================='
