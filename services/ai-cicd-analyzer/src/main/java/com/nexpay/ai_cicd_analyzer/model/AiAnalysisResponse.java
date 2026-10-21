@@ -1,11 +1,21 @@
+
 package com.nexpay.ai_cicd_analyzer.model;
 
 public class AiAnalysisResponse {
 
+    private String analysisStatus;
     private String failureType;
     private String rootCause;
     private String recommendation;
     private String severity;
+
+    public String getAnalysisStatus() {
+        return analysisStatus;
+    }
+
+    public void setAnalysisStatus(String analysisStatus) {
+        this.analysisStatus = analysisStatus;
+    }
 
     public String getFailureType() {
         return failureType;
