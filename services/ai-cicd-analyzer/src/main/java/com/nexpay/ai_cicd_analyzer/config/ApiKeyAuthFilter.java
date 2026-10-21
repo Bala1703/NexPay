@@ -56,6 +56,12 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         }
 
         String providedApiKey = request.getHeader(API_KEY_HEADER);
+	System.out.println("API key header present: " + (providedApiKey != null));
+System.out.println("API key matches: " +
+        (providedApiKey != null &&
+         MessageDigest.isEqual(
+             configuredApiKey.getBytes(StandardCharsets.UTF_8),
+             providedApiKey.getBytes(StandardCharsets.UTF_8))));
 
         if (providedApiKey == null
                 || !MessageDigest.isEqual(

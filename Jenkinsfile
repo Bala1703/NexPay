@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -243,34 +244,71 @@ pipeline {
 
                     echo "AI log file found: ${aiLogFile}"
 
-                    def response = httpRequest(
-                        httpMode: 'POST',
-                        url: 'http://localhost:8200/api/analyze',
-                        contentType: 'TEXT_PLAIN',
-                        acceptType: 'APPLICATION_JSON',
-                        customHeaders: [
-                            [
-                                name: 'X-Service-Name',
-                                value: 'NexPay'
-                            ],
-                            [
-                                name: 'X-Build-Number',
-                                value: "${env.BUILD_NUMBER}"
-                            ]
-                        ],
-                        uploadFile: aiLogFile,
-                        wrapAsMultipart: false,
-                        timeout: 0,
-                        validResponseCodes: '200'
-                    )
+                    withCredentials([
+                        string(
+                            credentialsId: 'vault-jenkins-token',
+                            variable: 'VAULT_TOKEN'
+                        )
+                    ]) {
 
-                    echo '==============================================='
-                    echo 'AI ANALYSIS RESULT'
-                    echo '==============================================='
-                    echo response.content
-                    echo '==============================================='
-                    echo 'AI ANALYSIS COMPLETED'
-                    echo '==============================================='
+                        echo 'Retrieving API key from Vault...'
+
+                        def vaultResponse = httpRequest(
+                            httpMode: 'GET',
+                            url: 'http://172.23.205.95:8200/v1/nexpay/data/api-key',
+                            customHeaders: [[
+                                name: 'X-Vault-Token',
+                                value: VAULT_TOKEN,
+                                maskValue: true
+                            ]],
+                            acceptType: 'APPLICATION_JSON',
+                            validResponseCodes: '200',
+                            timeout: 15
+                        )
+
+                        def vaultData = readJSON text: vaultResponse.content
+                        def apiKey = vaultData.data.data.api_key
+
+                        if (!apiKey) {
+                            error 'API key was not found in the Vault response.'
+                        }
+
+                        echo 'API key retrieved successfully.'
+
+                        def response = httpRequest(
+                            httpMode: 'POST',
+                            url: 'http://localhost:8200/api/analyze',
+                            contentType: 'TEXT_PLAIN',
+                            acceptType: 'APPLICATION_JSON',
+                            customHeaders: [
+                                [
+                                    name: 'X-Service-Name',
+                                    value: 'NexPay'
+                                ],
+                                [
+                                    name: 'X-Build-Number',
+                                    value: "${env.BUILD_NUMBER}"
+                                ],
+                                [
+                                    name: 'X-API-Key',
+                                    value: apiKey,
+                                    maskValue: true
+                                ]
+                            ],
+                            uploadFile: aiLogFile,
+                            wrapAsMultipart: false,
+                            timeout: 0,
+                            validResponseCodes: '200'
+                        )
+
+                        echo '==============================================='
+                        echo 'AI ANALYSIS RESULT'
+                        echo '==============================================='
+                        echo response.content
+                        echo '==============================================='
+                        echo 'AI ANALYSIS COMPLETED'
+                        echo '==============================================='
+                    }
                 }
             }
         }
