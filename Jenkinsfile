@@ -277,7 +277,7 @@ pipeline {
 
                         def response = httpRequest(
                             httpMode: 'POST',
-                            url: 'http://localhost:8200/api/analyze',
+                            url: 'http://localhost:8300/api/analyze',
                             contentType: 'TEXT_PLAIN',
                             acceptType: 'APPLICATION_JSON',
                             customHeaders: [
