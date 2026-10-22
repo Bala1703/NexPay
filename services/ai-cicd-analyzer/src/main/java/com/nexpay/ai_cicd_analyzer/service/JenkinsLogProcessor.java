@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 @Service
 public class JenkinsLogProcessor {
 
-    private static final int CHUNK_SIZE = 4000;
+    private static final int CHUNK_SIZE = 8000;
 
     // Detect common credentials assigned using = or :
     private static final Pattern SECRET_PATTERN = Pattern.compile(

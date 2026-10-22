@@ -111,59 +111,41 @@ public class AiAnalysisService {
     }
 
     @CircuitBreaker(name = "ollama", fallbackMethod = "analyzeFallback")
-    public AiAnalysisResponse analyze(String relevantLogs) {
+public AiAnalysisResponse analyze(String relevantLogs) {
 
-        List<String> chunks = logProcessor.splitIntoChunks(relevantLogs);
+    List<String> chunks = logProcessor.splitIntoChunks(relevantLogs);
 
-        if (chunks.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "No relevant Jenkins logs were provided."
-            );
-        }
-
-        logger.info(
-                "Starting AI analysis using {} log chunk(s).",
-                chunks.size()
+    if (chunks.isEmpty()) {
+        throw new IllegalArgumentException(
+                "No relevant Jenkins logs were provided."
         );
-
-        List<AiAnalysisResponse> chunkFindings = new ArrayList<>();
-
-        for (int i = 0; i < chunks.size(); i++) {
-            logger.info(
-                    "Analyzing log chunk {} of {}.",
-                    i + 1,
-                    chunks.size()
-            );
-
-            AiAnalysisResponse finding = analyzeChunk(
-                    chunks.get(i),
-                    i + 1,
-                    chunks.size()
-            );
-
-            chunkFindings.add(finding);
-        }
-
-        AiAnalysisResponse finalResponse;
-
-        if (chunkFindings.size() == 1) {
-            finalResponse = chunkFindings.get(0);
-        } else {
-            finalResponse = consolidateFindings(chunkFindings);
-        }
-
-        finalResponse = validateResponse(finalResponse);
-
-        // Apply independent checks against the original log evidence.
-        finalResponse = enforceEvidenceBasedResponse(
-                finalResponse,
-                relevantLogs
-        );
-
-        finalResponse.setAnalysisStatus("SUCCESS");
-
-        return finalResponse;
     }
+
+    logger.info(
+            "Starting AI analysis. Total log chunks: {}.",
+            chunks.size()
+    );
+
+    logger.info("Analyzing first log chunk only for speed testing.");
+
+    AiAnalysisResponse finalResponse = analyzeChunk(
+            chunks.get(0),
+            1,
+            chunks.size()
+    );
+
+    finalResponse = validateResponse(finalResponse);
+
+    // Preserve the independent checks against the original log evidence.
+    finalResponse = enforceEvidenceBasedResponse(
+            finalResponse,
+            relevantLogs
+    );
+
+    finalResponse.setAnalysisStatus("SUCCESS");
+
+    return finalResponse;
+}
 
     private AiAnalysisResponse analyzeChunk(
             String chunk,
