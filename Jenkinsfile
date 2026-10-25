@@ -286,7 +286,7 @@ pipeline {
                                 contentType: 'APPLICATION_JSON',
                                 acceptType: 'APPLICATION_JSON',
                                 requestBody: groovy.json.JsonOutput.toJson(agentRequest),
-                                timeout: 300,
+                                timeout: 600,
                                 validResponseCodes: '200'
                             )
 
@@ -300,79 +300,7 @@ pipeline {
                         }
                     } catch (Exception agentException) {
                         echo "Agentic AI investigation failed: ${agentException.getMessage()}"
-                        echo 'Continuing with the existing AI-CICD Analyzer.'
-                    }
-
-                    /*
-                     * Existing AI-CICD Analyzer + Vault integration
-                     */
-                    try {
-                        withCredentials([
-                            string(
-                                credentialsId: 'vault-jenkins-token',
-                                variable: 'VAULT_TOKEN'
-                            )
-                        ]) {
-                            echo 'Retrieving API key from Vault...'
-
-                            def vaultResponse = httpRequest(
-                                httpMode: 'GET',
-                                url: 'http://172.23.205.95:8200/v1/nexpay/data/api-key',
-                                customHeaders: [[
-                                    name: 'X-Vault-Token',
-                                    value: VAULT_TOKEN,
-                                    maskValue: true
-                                ]],
-                                acceptType: 'APPLICATION_JSON',
-                                validResponseCodes: '200',
-                                timeout: 15
-                            )
-
-                            def vaultData = readJSON text: vaultResponse.content
-                            def apiKey = vaultData.data.data.api_key
-
-                            if (!apiKey) {
-                                error 'API key was not found in the Vault response.'
-                            }
-
-                            echo 'API key retrieved successfully.'
-
-                            def analyzerResponse = httpRequest(
-                                httpMode: 'POST',
-                                url: 'http://localhost:8300/api/analyze',
-                                contentType: 'TEXT_PLAIN',
-                                acceptType: 'APPLICATION_JSON',
-                                customHeaders: [
-                                    [
-                                        name: 'X-Service-Name',
-                                        value: 'NexPay'
-                                    ],
-                                    [
-                                        name: 'X-Build-Number',
-                                        value: "${env.BUILD_NUMBER}"
-                                    ],
-                                    [
-                                        name: 'X-API-Key',
-                                        value: apiKey,
-                                        maskValue: true
-                                    ]
-                                ],
-                                uploadFile: aiLogFile,
-                                wrapAsMultipart: false,
-                                timeout: 0,
-                                validResponseCodes: '200'
-                            )
-
-                            echo '==============================================='
-                            echo 'AI-CICD ANALYZER RESULT'
-                            echo '==============================================='
-                            echo analyzerResponse.content
-                            echo '==============================================='
-                            echo 'AI-CICD ANALYZER COMPLETED'
-                            echo '==============================================='
-                        }
-                    } catch (Exception analyzerException) {
-                        echo "AI-CICD Analyzer failed: ${analyzerException.getMessage()}"
+                        echo 'No fallback to the old AI-CICD Analyzer is configured.'
                     }
                 }
             }
