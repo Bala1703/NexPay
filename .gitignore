@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+services/ai-build-investigation-agent/agent-startup.log

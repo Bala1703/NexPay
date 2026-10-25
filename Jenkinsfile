@@ -1,9 +1,9 @@
-
 pipeline {
     agent any
 
     environment {
         SONAR_TOKEN = credentials('sonarcloud-token')
+        FAILED_SERVICE = 'NexPay'
     }
 
     stages {
@@ -11,7 +11,7 @@ pipeline {
         stage('Prepare AI Log') {
             steps {
                 bat '''
-                    if exist "%WORKSPACE%\\ai-build-log.txt" del /f /q "%WORKSPACE%\\ai-build-log.txt "
+                    if exist "%WORKSPACE%\\ai-build-log.txt" del /f /q "%WORKSPACE%\\ai-build-log.txt"
                 '''
             }
         }
@@ -19,7 +19,6 @@ pipeline {
         stage('Detect Changes') {
             steps {
                 script {
-
                     def changedFiles = bat(
                         script: 'git diff --name-only HEAD~1 HEAD',
                         returnStdout: true
@@ -84,6 +83,9 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    env.FAILED_SERVICE = 'common'
+                }
                 dir('common') {
                     tee("${env.WORKSPACE}\\ai-build-log.txt") {
                         bat 'mvnw.cmd clean test'
@@ -99,6 +101,9 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    env.FAILED_SERVICE = 'user-service'
+                }
                 dir('services/user-service') {
                     tee("${env.WORKSPACE}\\ai-build-log.txt") {
                         bat 'mvnw.cmd clean test'
@@ -114,6 +119,9 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    env.FAILED_SERVICE = 'nexpay-connection-service'
+                }
                 dir('services/nexpay-connection-service') {
                     tee("${env.WORKSPACE}\\ai-build-log.txt") {
                         bat 'mvnw.cmd clean test'
@@ -129,6 +137,9 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    env.FAILED_SERVICE = 'bank-account-service'
+                }
                 dir('services/bank-account-service') {
                     tee("${env.WORKSPACE}\\ai-build-log.txt") {
                         bat 'mvnw.cmd clean test'
@@ -144,6 +155,9 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    env.FAILED_SERVICE = 'nexpay-transaction-service'
+                }
                 dir('services/nexpay-transaction-service') {
                     tee("${env.WORKSPACE}\\ai-build-log.txt") {
                         bat 'mvnw.cmd clean test'
@@ -159,6 +173,9 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    env.FAILED_SERVICE = 'nexpay-payment-service'
+                }
                 dir('services/nexpay-payment-service') {
                     tee("${env.WORKSPACE}\\ai-build-log.txt") {
                         bat 'mvnw.cmd clean test'
@@ -174,6 +191,9 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    env.FAILED_SERVICE = 'ai-cicd-analyzer'
+                }
                 dir('services/ai-cicd-analyzer') {
                     tee("${env.WORKSPACE}\\ai-build-log.txt") {
                         bat 'mvnw.cmd clean test'
@@ -184,6 +204,9 @@ pipeline {
 
         stage('SonarCloud Analysis') {
             steps {
+                script {
+                    env.FAILED_SERVICE = 'SonarCloud Analysis'
+                }
                 tee("${env.WORKSPACE}\\ai-build-log.txt") {
                     bat '''
                         common\\mvnw.cmd verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
@@ -200,114 +223,156 @@ pipeline {
     post {
 
         failure {
-
             script {
+                echo '================================================='
+                echo 'BUILD FAILED'
+                echo "Failed stage/service: ${env.FAILED_SERVICE}"
+                echo '================================================='
 
-                node {
+                def aiLogFile = "${env.WORKSPACE}\\ai-build-log.txt"
 
-                    echo '================================================='
-                    echo 'BUILD FAILED'
-                    echo '================================================='
+                bat '''
+                    echo ===== AI BUILD LOG =====
 
-                    echo 'Checking AI build log...'
+                    if exist "%WORKSPACE%\\ai-build-log.txt" (
+                        type "%WORKSPACE%\\ai-build-log.txt"
+                    ) else (
+                        echo AI build log file NOT FOUND
+                    )
 
-                    bat '''
-                        echo ===== AI BUILD LOG =====
+                    echo.
+                    echo ===== COPYING AI LOG =====
 
-                        if exist "%WORKSPACE%\\ai-build-log.txt" (
-                            type "%WORKSPACE%\\ai-build-log.txt"
-                        ) else (
-                            echo AI build log file NOT FOUND
-                        )
+                    if not exist "D:\\AI Powered CICD Optimization\\NexPay\\logs" (
+                        mkdir "D:\\AI Powered CICD Optimization\\NexPay\\logs"
+                    )
 
-                        echo.
-                        echo ===== COPYING AI LOG =====
+                    if exist "%WORKSPACE%\\ai-build-log.txt" (
+                        copy /Y "%WORKSPACE%\\ai-build-log.txt" "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
+                    )
+                '''
 
-                        if not exist "D:\\AI Powered CICD Optimization\\NexPay\\logs" (
-                            mkdir "D:\\AI Powered CICD Optimization\\NexPay\\logs"
-                        )
+                if (!fileExists(aiLogFile)) {
+                    echo "AI build log not found: ${aiLogFile}. Skipping AI analysis."
+                } else {
+                    echo "AI build log found: ${aiLogFile}"
 
-                        if exist "%WORKSPACE%\\ai-build-log.txt" (
-                            copy /Y "%WORKSPACE%\\ai-build-log.txt" "D:\\AI Powered CICD Optimization\\NexPay\\logs\\ai-build-log.txt"
-                        )
-                    '''
+                    /*
+                     * Agentic AI Investigation
+                     */
+                    try {
+                        echo 'Starting Agentic AI build investigation...'
 
-                    echo 'AI build log copied to: D:/AI Powered CICD Optimization/NexPay/logs/ai-build-log.txt'
+                        def buildLog = readFile(file: aiLogFile)
 
-                    echo 'Sending build log to AI Analyzer...'
+                        if (buildLog.trim().isEmpty()) {
+                            echo 'Build log is empty. Skipping Agentic AI investigation.'
+                        } else {
+                            // Agent API accepts a maximum of 200,000 characters.
+                            if (buildLog.length() > 200000) {
+                                buildLog = '[Earlier log content truncated to fit the 200,000-character limit]\n' +
+                                    buildLog.substring(buildLog.length() - 199900)
+                            }
 
-                    def aiLogFile = "${env.WORKSPACE}\\ai-build-log.txt"
+                            def agentRequest = [
+                                serviceName: env.FAILED_SERVICE ?: 'NexPay',
+                                buildNumber: "${env.BUILD_NUMBER}",
+                                buildLog: buildLog
+                            ]
 
-                    if (!fileExists(aiLogFile)) {
-                        error "AI build log file not found: ${aiLogFile}"
+                            def agentResponse = httpRequest(
+                                httpMode: 'POST',
+                                url: 'http://localhost:8410/api/agent/investigate',
+                                contentType: 'APPLICATION_JSON',
+                                acceptType: 'APPLICATION_JSON',
+                                requestBody: groovy.json.JsonOutput.toJson(agentRequest),
+                                timeout: 300,
+                                validResponseCodes: '200'
+                            )
+
+                            echo '================================================='
+                            echo 'AGENTIC AI INVESTIGATION REPORT'
+                            echo '================================================='
+                            echo agentResponse.content
+                            echo '================================================='
+                            echo 'AGENTIC AI INVESTIGATION COMPLETED'
+                            echo '================================================='
+                        }
+                    } catch (Exception agentException) {
+                        echo "Agentic AI investigation failed: ${agentException.getMessage()}"
+                        echo 'Continuing with the existing AI-CICD Analyzer.'
                     }
 
-                    echo "AI log file found: ${aiLogFile}"
+                    /*
+                     * Existing AI-CICD Analyzer + Vault integration
+                     */
+                    try {
+                        withCredentials([
+                            string(
+                                credentialsId: 'vault-jenkins-token',
+                                variable: 'VAULT_TOKEN'
+                            )
+                        ]) {
+                            echo 'Retrieving API key from Vault...'
 
-                    withCredentials([
-                        string(
-                            credentialsId: 'vault-jenkins-token',
-                            variable: 'VAULT_TOKEN'
-                        )
-                    ]) {
-
-                        echo 'Retrieving API key from Vault...'
-
-                        def vaultResponse = httpRequest(
-                            httpMode: 'GET',
-                            url: 'http://172.23.205.95:8200/v1/nexpay/data/api-key',
-                            customHeaders: [[
-                                name: 'X-Vault-Token',
-                                value: VAULT_TOKEN,
-                                maskValue: true
-                            ]],
-                            acceptType: 'APPLICATION_JSON',
-                            validResponseCodes: '200',
-                            timeout: 15
-                        )
-
-                        def vaultData = readJSON text: vaultResponse.content
-                        def apiKey = vaultData.data.data.api_key
-
-                        if (!apiKey) {
-                            error 'API key was not found in the Vault response.'
-                        }
-
-                        echo 'API key retrieved successfully.'
-
-                        def response = httpRequest(
-                            httpMode: 'POST',
-                            url: 'http://localhost:8300/api/analyze',
-                            contentType: 'TEXT_PLAIN',
-                            acceptType: 'APPLICATION_JSON',
-                            customHeaders: [
-                                [
-                                    name: 'X-Service-Name',
-                                    value: 'NexPay'
-                                ],
-                                [
-                                    name: 'X-Build-Number',
-                                    value: "${env.BUILD_NUMBER}"
-                                ],
-                                [
-                                    name: 'X-API-Key',
-                                    value: apiKey,
+                            def vaultResponse = httpRequest(
+                                httpMode: 'GET',
+                                url: 'http://172.23.205.95:8200/v1/nexpay/data/api-key',
+                                customHeaders: [[
+                                    name: 'X-Vault-Token',
+                                    value: VAULT_TOKEN,
                                     maskValue: true
-                                ]
-                            ],
-                            uploadFile: aiLogFile,
-                            wrapAsMultipart: false,
-                            timeout: 0,
-                            validResponseCodes: '200'
-                        )
+                                ]],
+                                acceptType: 'APPLICATION_JSON',
+                                validResponseCodes: '200',
+                                timeout: 15
+                            )
 
-                        echo '==============================================='
-                        echo 'AI ANALYSIS RESULT '
-                        echo '==============================================='
-                        echo response.content
-                        echo '==============================================='
-                        echo 'AI ANALYSIS COMPLETED'
-                        echo '==============================================='
+                            def vaultData = readJSON text: vaultResponse.content
+                            def apiKey = vaultData.data.data.api_key
+
+                            if (!apiKey) {
+                                error 'API key was not found in the Vault response.'
+                            }
+
+                            echo 'API key retrieved successfully.'
+
+                            def analyzerResponse = httpRequest(
+                                httpMode: 'POST',
+                                url: 'http://localhost:8300/api/analyze',
+                                contentType: 'TEXT_PLAIN',
+                                acceptType: 'APPLICATION_JSON',
+                                customHeaders: [
+                                    [
+                                        name: 'X-Service-Name',
+                                        value: 'NexPay'
+                                    ],
+                                    [
+                                        name: 'X-Build-Number',
+                                        value: "${env.BUILD_NUMBER}"
+                                    ],
+                                    [
+                                        name: 'X-API-Key',
+                                        value: apiKey,
+                                        maskValue: true
+                                    ]
+                                ],
+                                uploadFile: aiLogFile,
+                                wrapAsMultipart: false,
+                                timeout: 0,
+                                validResponseCodes: '200'
+                            )
+
+                            echo '==============================================='
+                            echo 'AI-CICD ANALYZER RESULT'
+                            echo '==============================================='
+                            echo analyzerResponse.content
+                            echo '==============================================='
+                            echo 'AI-CICD ANALYZER COMPLETED'
+                            echo '==============================================='
+                        }
+                    } catch (Exception analyzerException) {
+                        echo "AI-CICD Analyzer failed: ${analyzerException.getMessage()}"
                     }
                 }
             }
